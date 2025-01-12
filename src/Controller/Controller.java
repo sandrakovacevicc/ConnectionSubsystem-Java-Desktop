@@ -1,4 +1,6 @@
-package Controller;
+package controller;
+
+import DataBase.DatabaseBroker;
 
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
@@ -11,4 +13,17 @@ package Controller;
  */
 public class Controller {
     
+    DatabaseBroker db = new DatabaseBroker();
+    private static Controller instance;
+
+    private Controller() {
+
+    }
+
+    public static Controller getInstance() {
+        if (instance == null) {
+            instance = new Controller();
+        }
+        return instance;
+    }
 }

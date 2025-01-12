@@ -14,25 +14,52 @@ import java.util.List;
  * @author korisnik
  */
 public class Grad extends DomainObject{
+    private int postanski_br;
+    private String naziv;
 
+    public Grad() {
+    }
+
+    public Grad(int postanski_br, String naziv) {
+        this.postanski_br = postanski_br;
+        this.naziv = naziv;
+    }
+
+    public int getPostanski_br() {
+        return postanski_br;
+    }
+
+    public void setPostanski_br(int postanski_br) {
+        this.postanski_br = postanski_br;
+    }
+
+    public String getNaziv() {
+        return naziv;
+    }
+
+    public void setNaziv(String naziv) {
+        this.naziv = naziv;
+    }
+    
+    
     @Override
     public String getTableName() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        return "GRAD"; 
     }
 
     @Override
     public String getAllColumnNames() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        return "POSTANSKI_BR, NAZIV"; 
     }
 
     @Override
     public String getInsertColumnNames() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        return "POSTANSKI_BR, NAZIV";     
     }
 
     @Override
     public String getColumnValues() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        return String.format("%d, %s",postanski_br,naziv);
     }
 
     @Override

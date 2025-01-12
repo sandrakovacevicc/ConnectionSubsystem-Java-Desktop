@@ -14,7 +14,9 @@ import java.util.List;
  * @author korisnik
  */
 public class Direktor extends DomainObject {
-
+    private int id_direktora;
+    private String ime;
+    private String prezime;
     @Override
     public String getTableName() {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody

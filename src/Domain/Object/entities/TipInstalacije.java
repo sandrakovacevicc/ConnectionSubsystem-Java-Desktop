@@ -14,25 +14,52 @@ import java.util.List;
  * @author korisnik
  */
 public class TipInstalacije extends DomainObject {
+    private int id_instalacije;
+    private String tip;
 
+    public TipInstalacije() {
+    }
+
+    public TipInstalacije(int id_instalacije, String tip) {
+        this.id_instalacije = id_instalacije;
+        this.tip = tip;
+    }
+
+    public int getId_instalacije() {
+        return id_instalacije;
+    }
+
+    public void setId_instalacije(int id_instalacije) {
+        this.id_instalacije = id_instalacije;
+    }
+
+    public String getTip() {
+        return tip;
+    }
+
+    public void setTip(String tip) {
+        this.tip = tip;
+    }
+    
+    
     @Override
     public String getTableName() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        return "TIP_INSTALACIJE"; 
     }
 
     @Override
     public String getAllColumnNames() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        return "ID_INSTALACIJE, TIP";  
     }
 
     @Override
     public String getInsertColumnNames() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        return "ID_INSTALACIJE, TIP";   
     }
 
     @Override
     public String getColumnValues() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        return String.format("%d, %s",id_instalacije,tip);
     }
 
     @Override

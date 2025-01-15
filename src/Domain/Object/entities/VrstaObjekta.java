@@ -14,25 +14,52 @@ import java.util.List;
  * @author korisnik
  */
 public class VrstaObjekta extends DomainObject {
+    private int id_vrste_objekta;
+    private String naziv;
 
+    public VrstaObjekta() {
+    }
+
+    public VrstaObjekta(int id_vrste_objekta, String naziv) {
+        this.id_vrste_objekta = id_vrste_objekta;
+        this.naziv = naziv;
+    }
+
+    public int getId_vrste_objekta() {
+        return id_vrste_objekta;
+    }
+
+    public void setId_vrste_objekta(int id_vrste_objekta) {
+        this.id_vrste_objekta = id_vrste_objekta;
+    }
+
+    public String getNaziv() {
+        return naziv;
+    }
+
+    public void setNaziv(String naziv) {
+        this.naziv = naziv;
+    }
+    
+    
     @Override
     public String getTableName() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        return "VRSTA_OBJEKTA"; 
     }
 
     @Override
     public String getAllColumnNames() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        return "ID_VRSTE_OBJEKTA,NAZIV"; 
     }
 
     @Override
     public String getInsertColumnNames() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        return "ID_VRSTE_OBJEKTA,NAZIV";  
     }
 
     @Override
     public String getColumnValues() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        return String.format("%d, %s",id_vrste_objekta,naziv); 
     }
 
     @Override

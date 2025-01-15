@@ -14,25 +14,65 @@ import java.util.List;
  * @author korisnik
  */
 public class UslugaPrikljucivanja extends DomainObject {
+    private int id_usluge;
+    private String naziv;
+    private float cena;
 
+    public UslugaPrikljucivanja() {
+    }
+
+    public UslugaPrikljucivanja(int id_usluge, String naziv, float cena) {
+        this.id_usluge = id_usluge;
+        this.naziv = naziv;
+        this.cena = cena;
+    }
+
+    public int getId_usluge() {
+        return id_usluge;
+    }
+
+    public void setId_usluge(int id_usluge) {
+        this.id_usluge = id_usluge;
+    }
+
+    public String getNaziv() {
+        return naziv;
+    }
+
+    public void setNaziv(String naziv) {
+        this.naziv = naziv;
+    }
+
+    public float getCena() {
+        return cena;
+    }
+
+    public void setCena(float cena) {
+        this.cena = cena;
+    }
+    
+    
     @Override
     public String getTableName() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        return "USLUGA_PRIKLJUCIVANJA"; 
     }
 
     @Override
     public String getAllColumnNames() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        return "ID_USLUGE,NAZIV,CENA"; 
     }
 
     @Override
     public String getInsertColumnNames() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        return "ID_USLUGE,NAZIV,CENA"; 
     }
 
     @Override
     public String getColumnValues() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+          return String.format("%d, %s, %.2f",
+                id_usluge,
+                naziv,
+                cena);
     }
 
     @Override

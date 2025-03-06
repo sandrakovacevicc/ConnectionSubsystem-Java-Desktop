@@ -5,6 +5,7 @@
 package DataBase;
 
 import Domain.Object.DomainObject;
+import Domain.Object.entities.KatastarskaOpstina;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.sql.Connection;
@@ -12,8 +13,11 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.sql.PreparedStatement;
+
 
 /**
  *
@@ -61,6 +65,7 @@ public class DatabaseBroker {
             ex.printStackTrace();
         }
     }
+
 
     public Connection getConnection() {
         return this.connection;
@@ -112,17 +117,19 @@ public class DatabaseBroker {
     }
 
     public List<DomainObject> getAllWithWhere(DomainObject object, String whereClause) throws SQLException {
-        try {
-            Statement statement = connection.createStatement();
-            String query = "SELECT " + object.getAllColumnNames() + " FROM "
-                    + object.getTableName() + " WHERE " + whereClause + " ORDER BY " + object.getOrderByColumn();
-            ResultSet rs = statement.executeQuery(query);
+    try {
+        Statement statement = connection.createStatement();
+        String query = "SELECT " + object.getAllColumnNames() + " FROM "
+                + object.getTableName() + " WHERE " + whereClause + " ORDER BY " + object.getOrderByColumn();
+        ResultSet rs = statement.executeQuery(query);
 
-            return object.getObjectsFromResultSet(rs);
-        } catch (SQLException ex) {
-            throw ex;
-        }
+        return object.getObjectsFromResultSet(rs);
+    } catch (SQLException ex) {
+        throw ex;
     }
+}
+
+    
 
     public int delete(DomainObject odo) throws SQLException {
         try {
@@ -146,5 +153,33 @@ public class DatabaseBroker {
             throw ex;
         }
     }
+    
+     public List<KatastarskaOpstina> GetByPostanskiBr(String postanski_br) throws SQLException {
+     String query = "SELECT ID_OPSTINE, NAZIV FROM KATASTARSKA_OPSTINA " +
+                   "WHERE ID_OPSTINE IN (" +
+                   "  SELECT K.ID_OPSTINE " +
+                   "  FROM KATASTARSKA_OPSTINA K " +
+                   "  JOIN Ulica U ON K.ID_OPSTINE = U.ID_OPSTINE " +
+                   "  JOIN Grad G ON U.POSTANSKI_BR = G.POSTANSKI_BR " +
+                   "  WHERE G.POSTANSKI_BR = ?)" + 
+                   " ORDER BY NAZIV";
+
+    PreparedStatement stmt = connection.prepareStatement(query);
+    stmt.setString(1, postanski_br);  
+
+    ResultSet rs = stmt.executeQuery();
+    List<KatastarskaOpstina> opstine = new ArrayList<>();
+
+    while (rs.next()) {
+        KatastarskaOpstina opstina = new KatastarskaOpstina();
+        opstina.setId_opstine(rs.getInt("ID_OPSTINE"));
+        opstina.setNaziv(rs.getString("NAZIV"));
+        opstine.add(opstina);
+    }
+
+    return opstine;
+    }
+    
+    
     
 }

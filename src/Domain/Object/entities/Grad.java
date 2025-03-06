@@ -7,6 +7,7 @@ package Domain.Object.entities;
 import Domain.Object.DomainObject;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -64,7 +65,9 @@ public class Grad extends DomainObject{
 
     @Override
     public String getUpdateClause() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+         return String.format("POSTANSKI_BR = %d, NAZIV = '%s'",
+                this.getPostanski_br(),
+                this.getNaziv());      
     }
 
     @Override
@@ -74,7 +77,7 @@ public class Grad extends DomainObject{
 
     @Override
     public String getUpdateWhereClause() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        return String.format("POSTANSKI_BR = %d", this.getPostanski_br());
     }
 
     @Override
@@ -84,12 +87,20 @@ public class Grad extends DomainObject{
 
     @Override
     public List<DomainObject> getObjectsFromResultSet(ResultSet rs) throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        List<DomainObject> gradovi = new ArrayList<>();
+        
+        while(rs.next()) {
+            int postanski_broj = rs.getInt("POSTANSKI_BR");     
+            String naziv = rs.getString("NAZIV");
+            
+            gradovi.add(new Grad(postanski_broj, naziv));
+        }
+        return gradovi;
     }
 
     @Override
     public String getOrderByColumn() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        return "NAZIV"; // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
     
 }

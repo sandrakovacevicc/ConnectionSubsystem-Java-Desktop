@@ -4,6 +4,10 @@
  */
 package forms;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author korisnik
@@ -15,6 +19,8 @@ public class MainForm extends javax.swing.JFrame {
      */
     public MainForm() {
         initComponents();
+         setTitle("Glavna forma");
+        setLocationRelativeTo(null);
     }
 
     /**
@@ -26,7 +32,52 @@ public class MainForm extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jMenuBar1 = new javax.swing.JMenuBar();
+        jMenu1 = new javax.swing.JMenu();
+        frmPrikljucak = new javax.swing.JMenuItem();
+        frmMolbaZaUrbanizam = new javax.swing.JMenuItem();
+        frmObjekat = new javax.swing.JMenuItem();
+        frmZaposleni = new javax.swing.JMenuItem();
+        frmGrad = new javax.swing.JMenuItem();
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        jMenu1.setText("Izaberi formu");
+
+        frmPrikljucak.setText("Priključak");
+        frmPrikljucak.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                frmPrikljucakMouseClicked(evt);
+            }
+        });
+        jMenu1.add(frmPrikljucak);
+
+        frmMolbaZaUrbanizam.setText("Molba za Urbanizam");
+        jMenu1.add(frmMolbaZaUrbanizam);
+
+        frmObjekat.setText("Objekat");
+        jMenu1.add(frmObjekat);
+
+        frmZaposleni.setText("Zaposleni");
+        frmZaposleni.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                frmZaposleniActionPerformed(evt);
+            }
+        });
+        jMenu1.add(frmZaposleni);
+
+        frmGrad.setText("Grad");
+        frmGrad.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                frmGradActionPerformed(evt);
+            }
+        });
+        jMenu1.add(frmGrad);
+
+        jMenuBar1.add(jMenu1);
+        jMenu1.getAccessibleContext().setAccessibleName("File");
+
+        setJMenuBar(jMenuBar1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -36,11 +87,29 @@ public class MainForm extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addGap(0, 277, Short.MAX_VALUE)
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void frmPrikljucakMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_frmPrikljucakMouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_frmPrikljucakMouseClicked
+
+    private void frmZaposleniActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_frmZaposleniActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_frmZaposleniActionPerformed
+
+    private void frmGradActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_frmGradActionPerformed
+
+try {
+            GradForm frmGrad = new GradForm();
+            frmGrad.setVisible(true);
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, "Došlo je do greške: " + ex.getMessage(), "Greška", JOptionPane.ERROR_MESSAGE);
+        }        // TODO add your handling code here:
+    }//GEN-LAST:event_frmGradActionPerformed
 
     /**
      * @param args the command line arguments
@@ -78,5 +147,12 @@ public class MainForm extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenuItem frmGrad;
+    private javax.swing.JMenuItem frmMolbaZaUrbanizam;
+    private javax.swing.JMenuItem frmObjekat;
+    private javax.swing.JMenuItem frmPrikljucak;
+    private javax.swing.JMenuItem frmZaposleni;
+    private javax.swing.JMenu jMenu1;
+    private javax.swing.JMenuBar jMenuBar1;
     // End of variables declaration//GEN-END:variables
 }

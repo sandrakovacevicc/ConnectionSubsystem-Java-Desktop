@@ -1,6 +1,15 @@
 package controller;
 
 import DataBase.DatabaseBroker;
+import Domain.Object.entities.Grad;
+import Domain.Object.entities.KatastarskaOpstina;
+import Domain.Object.entities.Ulica;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
@@ -26,4 +35,129 @@ public class Controller {
         }
         return instance;
     }
+    
+    public List<Grad> loadSveGradove() throws Exception {
+        List<Grad> gradovi = new LinkedList<Grad>();
+        try {
+            db.connect();
+            gradovi = (List<Grad>) (Object) db.getAll(new Grad());
+        } catch (Exception ex) {
+            throw ex;
+        } finally {
+            try {
+                db.disconnect();
+            } catch (Exception ex) {
+                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return gradovi;
+    }
+    
+    public List<Ulica> loadSveUlice() throws Exception {
+        List<Ulica> ulice = new LinkedList<Ulica>();
+        try {
+            db.connect();
+            ulice = (List<Ulica>) (Object) db.getAll(new Ulica());
+        } catch (Exception ex) {
+            throw ex;
+        } finally {
+            try {
+                db.disconnect();
+            } catch (Exception ex) {
+                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return ulice;
+    }
+    
+    
+     public List<Ulica> searchUlice(String whereClause) throws Exception {
+        List<Ulica> ulice = new LinkedList<Ulica>();
+        try {
+            db.connect();
+            ulice = (List<Ulica>) (Object) db.getAllWithWhere(new Ulica(), whereClause);
+        } catch (Exception ex) {
+            throw ex;
+        } finally {
+            try {
+                db.disconnect();
+            } catch (Exception ex) {
+                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return ulice;
+    }
+     
+     public List<Grad> searchGradovi(String whereClause) throws Exception {
+        List<Grad> gradovi = new LinkedList<Grad>();
+        try {
+            db.connect();
+            gradovi = (List<Grad>) (Object) db.getAllWithWhere(new Grad(), whereClause);
+        } catch (Exception ex) {
+            throw ex;
+        } finally {
+            try {
+                db.disconnect();
+            } catch (Exception ex) {
+                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return gradovi;
+    }
+     
+      public List<KatastarskaOpstina> loadSveOpstine() throws Exception {
+        List<KatastarskaOpstina> opstine = new LinkedList<KatastarskaOpstina>();
+        try {
+            db.connect();
+            opstine = (List<KatastarskaOpstina>) (Object) db.getAll(new KatastarskaOpstina());
+        } catch (Exception ex) {
+            throw ex;
+        } finally {
+            try {
+                db.disconnect();
+            } catch (Exception ex) {
+                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return opstine;
+    }
+    
+    public List<KatastarskaOpstina> searchOpstineByPostanskiBr(String postanski_br) throws Exception {
+        List<KatastarskaOpstina> opstine = new LinkedList<KatastarskaOpstina>();
+        try {
+            db.connect();
+            opstine = (List<KatastarskaOpstina>) (Object) db.GetByPostanskiBr(postanski_br);
+        } catch (Exception ex) {
+            throw ex;
+        } finally {
+            try {
+                db.disconnect();
+            } catch (Exception ex) {
+                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return opstine;
+    }
+    
+    public void updateGrad(Grad g) throws Exception {
+        try {
+            db.connect();
+            int answer = JOptionPane.showConfirmDialog(null, "Zelite li da izmenite grad?", "Izmena", JOptionPane.YES_NO_OPTION);
+            if (answer == 1) {
+                return;
+            }
+            db.update(g);
+            JOptionPane.showMessageDialog(null, "Uspesno ste izmenili grad");
+
+        } catch (Exception ex) {
+            throw ex;
+        } finally {
+            try {
+                db.disconnect();
+            } catch (Exception ex) {
+                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+
 }

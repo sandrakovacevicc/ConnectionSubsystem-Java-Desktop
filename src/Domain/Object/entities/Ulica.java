@@ -72,6 +72,15 @@ public class Ulica extends DomainObject {
 
     public Ulica() {
     }
+
+    public Ulica(int postanski_br, int id_ulice, String naziv, int id_opstine) {
+        this.postanski_br = postanski_br;
+        this.id_ulice = id_ulice;
+        this.naziv = naziv;
+        this.id_opstine = id_opstine;
+    }
+    
+    
     
     
     @Override
@@ -91,12 +100,13 @@ public class Ulica extends DomainObject {
 
     @Override
     public String getColumnValues() {
-        return String.format("%d,%d,%s,%d,%s",postanski_br, id_ulice, naziv, id_opstine, naziv_grada);
+        String nazivGradaValue = (naziv_grada != null && !naziv_grada.isEmpty()) ? "'" + naziv_grada + "'" : "NULL";
+        return String.format("%d,%d,'%s',%d,%s", postanski_br, id_ulice, naziv, id_opstine, nazivGradaValue);
     }
 
     @Override
     public String getUpdateClause() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+                throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody;
     }
 
     @Override
@@ -130,6 +140,7 @@ public class Ulica extends DomainObject {
         }
         return ulice;
     }
+   
 
     @Override
     public String getOrderByColumn() {

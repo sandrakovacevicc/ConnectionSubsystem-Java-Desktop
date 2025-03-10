@@ -41,8 +41,10 @@ public class GradForm extends javax.swing.JFrame {
         initComponents();
         setTitle("Grad");
         setLocationRelativeTo(null);
-        setUpTableListenerGrad();
         ucitajPodatkeUFormu();
+        setUpTableListenerGrad();
+        setUpTableListenerUlica();
+        
         
     }
 
@@ -69,7 +71,7 @@ public class GradForm extends javax.swing.JFrame {
     
     cmbGradovi.removeAllItems(); 
     for (Grad g : gradovi) {
-        cmbGradovi.addItem(g.getNaziv()); 
+        cmbGradovi.addItem(String.valueOf(g.getPostanski_br()));  
     }
     
     }
@@ -77,13 +79,13 @@ public class GradForm extends javax.swing.JFrame {
     private void ucitajGradoveCmb(java.awt.event.ActionEvent evt) throws Exception {
     
      String izabraniGrad = (String) cmbGradovi.getSelectedItem();
-    if (izabraniGrad != null) {
-        Grad grad= gradovi.stream()
-                .filter(g -> g.getNaziv().equals(izabraniGrad))
+     if (izabraniGrad != null) {
+        Grad grad = gradovi.stream()
+                .filter(g -> String.valueOf(g.getPostanski_br()).equals(izabraniGrad))
                 .findFirst()
                 .orElse(null);
         
-        if (izabraniGrad != null) {
+        if (grad != null) {
             try {
                 ucitajKatastarskeOpstine(grad.getPostanski_br());
             } catch (Exception ex) {
@@ -98,7 +100,7 @@ public class GradForm extends javax.swing.JFrame {
     List<KatastarskaOpstina> katastarskeOpstine = Controller.getInstance().searchOpstineByPostanskiBr(String.valueOf(postanskiBr));
 
     if (cmbOpstina != null) {
-        cmbOpstina.removeAllItems();  // Ukloni sve prethodne stavke u ComboBox-u
+        cmbOpstina.removeAllItems();  
         for (KatastarskaOpstina o : katastarskeOpstine) {
             cmbOpstina.addItem(o.getNaziv());  
         }
@@ -108,8 +110,6 @@ public class GradForm extends javax.swing.JFrame {
 }
 
 
-
-    
     
     private void sacuvajOriginalneVrednosti(JTable table) {
         DefaultTableModel model = (DefaultTableModel) tblUlica.getModel();
@@ -197,6 +197,43 @@ public class GradForm extends javax.swing.JFrame {
     
 }
     
+    private void popuniFormuUlicom(Ulica u) {
+        txtUlicaID.setText(String.valueOf(u.getId_ulice()));
+        txtNaziv.setText(u.getNaziv());
+         Grad odgovarajućiGrad = gradovi.stream()
+        .filter(g -> g.getPostanski_br() == u.getPostanski_br())
+        .findFirst()
+        .orElse(null);
+
+    if (odgovarajućiGrad != null) {
+        cmbGradovi.setSelectedItem(odgovarajućiGrad.getPostanski_br());
+    } else {
+        cmbGradovi.setSelectedItem("Nepoznato"); // Postavlja podrazumevanu vrednost ako ne pronađe grad
+    }
+    }
+    
+     private void setUpTableListenerUlica() {
+        tblUlica.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            public void valueChanged(ListSelectionEvent event) {
+                if (!event.getValueIsAdjusting()) {
+                    try {
+                        Ulica izabranaUlica = jeIzabranaUlica();
+                        pronadjeneUlice = Controller.getInstance().searchUlice("POSTANSKI_BR='" + String.valueOf(izabranaUlica.getPostanski_br()) + "' AND ID_ULICE='" + String.valueOf(izabranaUlica.getId_ulice()) + "'");
+
+                        if (pronadjeneUlice != null && !pronadjeneUlice.isEmpty()) {
+                            izabranaUlica = pronadjeneUlice.get(0);
+                        }
+
+                        popuniFormuUlicom(izabranaUlica);
+                    } catch (Exception ex) {
+                        java.util.logging.Logger.getLogger(GradForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+                    }
+                }
+            }
+        }
+        );
+    }
+    
      private Grad jeIzabranGrad() {
         int postanski_broj = 0;
         String naziv = null;
@@ -214,6 +251,114 @@ public class GradForm extends javax.swing.JFrame {
         g.setNaziv(naziv);
 
         return g;
+    }
+     
+    private Ulica preuzmiPodatkeZaUlicu() throws Exception {
+    int ulica_ID = Integer.parseInt(txtUlicaID.getText());
+    String naziv = txtNaziv.getText();
+     String izabranGradCmb = (String) cmbGradovi.getSelectedItem();
+    Grad grad = findGradByPostanskiBr(Integer.parseInt(izabranGradCmb));
+    int postanskiBr = grad != null ? grad.getPostanski_br() : 0;
+    
+   String izabranaOpstinaCmb = (String) cmbOpstina.getSelectedItem();
+if (izabranaOpstinaCmb == null || izabranaOpstinaCmb.isEmpty()) {
+    System.out.println("Nema izabrane opštine.");
+} 
+
+    Object izabranaOpstina = cmbOpstina.getSelectedItem();
+    pronadjeneKatastarskeOpstine = Controller.getInstance().searchOpstine("NAZIV='" + izabranaOpstina.toString() + "'");
+    int opstinaID = pronadjeneKatastarskeOpstine.get(0).getId_opstine();
+    
+
+    String nazivgrada = "";
+    Ulica u = new Ulica(postanskiBr,ulica_ID,naziv,opstinaID, nazivgrada);
+    return u;
+}
+    
+public Grad findGradByPostanskiBr(int postanskiBr) {
+    for (Grad grad : gradovi) {
+        if (grad.getPostanski_br() == postanskiBr) {
+            return grad;
+        }
+    }
+    return null;  
+}
+
+    
+    public KatastarskaOpstina findOpstinaByName(String opstinaName) {
+
+    for (KatastarskaOpstina opstina : katastarskeOpstine) {
+        if (opstina.getNaziv().equals(opstinaName)) {
+            return opstina;
+        }
+    }
+    return null;  
+}
+    
+    private void reloadGridUlica(){
+        tblUlica = new javax.swing.JTable();
+        jScrollPane2.setViewportView(tblUlica);
+        tblUlica.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Postanski broj", "ID Ulice", "Naziv", "ID Opstine", "Naziv grada"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.String.class, java.lang.Integer.class, java.lang.String.class, java.lang.Integer.class, java.lang.String.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false, true, false, true
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        this.setUpTableListenerUlica();
+    }
+
+    private String generisiSetKlauzuUlica(JTable table, int selectedRow) {
+        DefaultTableModel model = (DefaultTableModel) table.getModel();
+        StringBuilder setClause = new StringBuilder(" ");
+
+        Integer postanskibr = (Integer) model.getValueAt(selectedRow, 0);
+        Integer idUlice = (Integer) model.getValueAt(selectedRow, 1);
+        String naziv = (String) model.getValueAt(selectedRow, 2);
+        Integer idOpstine = (Integer) model.getValueAt(selectedRow, 3);
+        String nazivGrada = (String) model.getValueAt(selectedRow, 4);
+
+        String[] original = originalneVrednostiUlica.get(selectedRow);
+        String originalPostanskiBr = original[0];
+        String PostanskiBrString = originalPostanskiBr.toString();
+                
+        String originalNaziv = original[2];
+        String originalNazivGrada = original[4];
+
+        boolean needComma = false;
+
+        if(!PostanskiBrString.equals(originalPostanskiBr)) {
+            setClause.append("POSTANSKI_BR = '").append(PostanskiBrString).append("'");
+            needComma = true;
+        }
+        if (!naziv.equals(originalNaziv)) {
+            setClause.append("NAZIV = '").append(naziv).append("'");
+            needComma = true;
+        }
+        if (!nazivGrada.equals(originalNazivGrada)) {
+            if (needComma) {
+                setClause.append(", ");
+            }
+            setClause.append("NAZIV_GRADA = '").append(nazivGrada).append("'");
+        }
+
+        return setClause.toString();
     }
 
 
@@ -238,7 +383,7 @@ public class GradForm extends javax.swing.JFrame {
         tblUlica = new javax.swing.JTable();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        txtOdeljenjeID = new javax.swing.JTextField();
+        txtUlicaID = new javax.swing.JTextField();
         txtNaziv = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
         cmbGradovi = new javax.swing.JComboBox<>();
@@ -247,7 +392,7 @@ public class GradForm extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setName("frmGrad"); // NOI18N
 
-        jLabel4.setText("Grad");
+        jLabel4.setText("Postanski Broj");
 
         btnIzmeniGrad.setText("Izmeni");
         btnIzmeniGrad.addActionListener(new java.awt.event.ActionListener() {
@@ -368,16 +513,15 @@ public class GradForm extends javax.swing.JFrame {
                                     .addComponent(jLabel3))
                                 .addGap(29, 29, 29))
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel2)
-                                .addGap(18, 18, 18))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addComponent(jLabel5)
-                                .addGap(18, 18, 18)))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel2)
+                                    .addComponent(jLabel5))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                        .addComponent(txtOdeljenjeID, javax.swing.GroupLayout.PREFERRED_SIZE, 216, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(txtUlicaID, javax.swing.GroupLayout.PREFERRED_SIZE, 216, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addComponent(txtNaziv, javax.swing.GroupLayout.PREFERRED_SIZE, 216, javax.swing.GroupLayout.PREFERRED_SIZE))
                                     .addComponent(cmbGradovi, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 216, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGap(140, 140, 140)
@@ -406,7 +550,7 @@ public class GradForm extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel2)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(txtOdeljenjeID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(txtUlicaID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                     .addComponent(txtNaziv, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -448,15 +592,49 @@ public class GradForm extends javax.swing.JFrame {
     }//GEN-LAST:event_btnIzmeniGradActionPerformed
 
     private void btnSacuvajActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSacuvajActionPerformed
-       
+        try {
+            Ulica u = preuzmiPodatkeZaUlicu();
+
+            Controller.getInstance().insertUlica(u);
+
+            Ulica ulica = jeIzabranaUlica();
+
+            int postanskiBr = Integer.parseInt(cmbGradovi.getSelectedItem().toString());
+            popuniTabeluUlicama(postanskiBr);
+        } catch (Exception ex) {
+            java.util.logging.Logger.getLogger(GradForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(null, "Došlo je do greške: " + ex.getMessage(), "Greška", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_btnSacuvajActionPerformed
 
     private void btnIzmeniActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIzmeniActionPerformed
-       
+       try {
+            Ulica u = jeIzabranaUlica();
+
+            String setClause = generisiSetKlauzuUlica(tblUlica, tblUlica.getSelectedRow());
+
+            Controller.getInstance().updateUlica(u, setClause);
+
+            int postanskiBr = Integer.parseInt(cmbGradovi.getSelectedItem().toString());
+            popuniTabeluUlicama(postanskiBr);
+        } catch (Exception ex) {
+            java.util.logging.Logger.getLogger(GradForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(null, "Došlo je do greške: " + ex.getMessage(), "Greška", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_btnIzmeniActionPerformed
 
     private void btnObrisiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnObrisiActionPerformed
-        
+        try {
+            Ulica u = jeIzabranaUlica();
+
+            Controller.getInstance().deleteUlica(u);
+
+            int postanskiBr = Integer.parseInt(cmbGradovi.getSelectedItem().toString());
+            popuniTabeluUlicama(postanskiBr);
+        } catch (Exception ex) {
+            java.util.logging.Logger.getLogger(GradForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(null, "Došlo je do greške: " + ex.getMessage(), "Greška", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_btnObrisiActionPerformed
 
     /**
@@ -515,6 +693,6 @@ public class GradForm extends javax.swing.JFrame {
     private javax.swing.JTable tblGrad;
     private javax.swing.JTable tblUlica;
     private javax.swing.JTextField txtNaziv;
-    private javax.swing.JTextField txtOdeljenjeID;
+    private javax.swing.JTextField txtUlicaID;
     // End of variables declaration//GEN-END:variables
 }

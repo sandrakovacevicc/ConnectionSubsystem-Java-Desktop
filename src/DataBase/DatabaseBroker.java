@@ -129,6 +129,17 @@ public class DatabaseBroker {
     }
 }
 
+    public int updatePartial(DomainObject odo, String setClause) throws SQLException {
+        try {
+            Statement statement = connection.createStatement();
+            String query = "UPDATE " + odo.getTableName() + " SET " + setClause + " WHERE " + odo.getUpdateWhereClause();
+            System.out.println(query);
+            int rowsUpdated = statement.executeUpdate(query);
+            return rowsUpdated;
+        } catch (SQLException ex) {
+            throw ex;
+        }
+    }
     
 
     public int delete(DomainObject odo) throws SQLException {

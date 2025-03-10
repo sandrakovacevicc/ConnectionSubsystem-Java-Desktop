@@ -139,6 +139,23 @@ public class Controller {
         return opstine;
     }
     
+    public List<KatastarskaOpstina> searchOpstine(String whereClause) throws Exception {
+        List<KatastarskaOpstina> opstine = new LinkedList<KatastarskaOpstina>();
+        try {
+            db.connect();
+            opstine = (List<KatastarskaOpstina>) (Object) db.getAllWithWhere(new KatastarskaOpstina(), whereClause);
+        } catch (Exception ex) {
+            throw ex;
+        } finally {
+            try {
+                db.disconnect();
+            } catch (Exception ex) {
+                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return opstine;
+    }
+    
     public void updateGrad(Grad g) throws Exception {
         try {
             db.connect();
@@ -149,6 +166,63 @@ public class Controller {
             db.update(g);
             JOptionPane.showMessageDialog(null, "Uspesno ste izmenili grad");
 
+        } catch (Exception ex) {
+            throw ex;
+        } finally {
+            try {
+                db.disconnect();
+            } catch (Exception ex) {
+                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+    
+    
+    public void insertUlica(Ulica u) throws Exception {
+        try {
+            db.connect();
+            db.insert(u);
+            JOptionPane.showMessageDialog(null, "Uspesno ste uneli");
+
+        } catch (Exception ex) {
+            throw ex;
+        } finally {
+            try {
+                db.disconnect();
+            } catch (Exception ex) {
+                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+    
+    public void deleteUlica(Ulica u) throws Exception {
+        try {
+            db.connect();
+            int answer = JOptionPane.showConfirmDialog(null, "Zaista zelite da obrisete ulicu?", "Brisanje", JOptionPane.YES_NO_OPTION);
+            if (answer == 1) {
+                return;
+            }
+            db.delete(u);
+
+        } catch (Exception ex) {
+            throw ex;
+        } finally {
+            try {
+                db.disconnect();
+            } catch (Exception ex) {
+                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+    
+    public void updateUlica(Ulica u, String setClause) throws Exception {
+          try {
+            db.connect();
+            int answer = JOptionPane.showConfirmDialog(null, "Zelite li da izmenite nalog?", "Izmena", JOptionPane.YES_NO_OPTION);
+            if (answer == JOptionPane.YES_OPTION) {
+                db.updatePartial(u, setClause);
+                JOptionPane.showMessageDialog(null, "Uspesno ste izmenili");
+            }
         } catch (Exception ex) {
             throw ex;
         } finally {

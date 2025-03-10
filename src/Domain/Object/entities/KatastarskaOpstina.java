@@ -75,7 +75,7 @@ public class KatastarskaOpstina extends DomainObject{
 
     @Override
     public String getUpdateWhereClause() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    return String.format("ID_OPSTINE= %d", this.getId_opstine());   
     }
 
     @Override

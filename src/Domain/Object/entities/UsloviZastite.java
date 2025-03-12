@@ -7,6 +7,7 @@ package Domain.Object.entities;
 import Domain.Object.DomainObject;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -44,7 +45,7 @@ public class UsloviZastite extends DomainObject {
     
     @Override
     public String getTableName() {
-        return "USLOVI_ZASTITE"; // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        return "USLOVI_ZASTITE"; 
     }
 
     @Override
@@ -84,12 +85,23 @@ public class UsloviZastite extends DomainObject {
 
     @Override
     public List<DomainObject> getObjectsFromResultSet(ResultSet rs) throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
+    List<DomainObject> usloviz = new ArrayList<>();
+        
+        while(rs.next()) {
+            int id_uslovz = rs.getInt("ID_USLOVZ");     
+            String naziv = rs.getString("NAZIV");
+            
+            usloviz.add(new UsloviZastite(id_uslovz, naziv));
+        }
+        return usloviz;    }
 
     @Override
     public String getOrderByColumn() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        return "ID_USLOVZ"; 
     }
+    
+    @Override
+    public String toString() {
+    return naziv;}
     
 }

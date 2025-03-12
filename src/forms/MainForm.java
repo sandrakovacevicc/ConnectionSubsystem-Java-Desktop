@@ -50,6 +50,11 @@ public class MainForm extends javax.swing.JFrame {
                 frmPrikljucakMouseClicked(evt);
             }
         });
+        frmPrikljucak.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                frmPrikljucakActionPerformed(evt);
+            }
+        });
         jMenu1.add(frmPrikljucak);
 
         frmMolbaZaUrbanizam.setText("Molba za Urbanizam");
@@ -94,7 +99,7 @@ public class MainForm extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void frmPrikljucakMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_frmPrikljucakMouseClicked
-        // TODO add your handling code here:
+
     }//GEN-LAST:event_frmPrikljucakMouseClicked
 
     private void frmZaposleniActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_frmZaposleniActionPerformed
@@ -110,6 +115,15 @@ try {
             JOptionPane.showMessageDialog(null, "Došlo je do greške: " + ex.getMessage(), "Greška", JOptionPane.ERROR_MESSAGE);
         }        // TODO add your handling code here:
     }//GEN-LAST:event_frmGradActionPerformed
+
+    private void frmPrikljucakActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_frmPrikljucakActionPerformed
+         try {
+            PrikljucakForm frmPrikljucak = new PrikljucakForm();
+            frmPrikljucak.setVisible(true);
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, "Došlo je do greške: " + ex.getMessage(), "Greška", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_frmPrikljucakActionPerformed
 
     /**
      * @param args the command line arguments

@@ -79,6 +79,7 @@ public class GradForm extends javax.swing.JFrame {
     private void ucitajGradoveCmb(java.awt.event.ActionEvent evt) throws Exception {
     
      String izabraniGrad = (String) cmbGradovi.getSelectedItem();
+
      if (izabraniGrad != null) {
         Grad grad = gradovi.stream()
                 .filter(g -> String.valueOf(g.getPostanski_br()).equals(izabraniGrad))
@@ -87,6 +88,7 @@ public class GradForm extends javax.swing.JFrame {
         
         if (grad != null) {
             try {
+
                 ucitajKatastarskeOpstine(grad.getPostanski_br());
             } catch (Exception ex) {
                 // Handle exceptions (e.g., log)
@@ -197,21 +199,6 @@ public class GradForm extends javax.swing.JFrame {
     
 }
     
-    private void popuniFormuUlicom(Ulica u) {
-        txtUlicaID.setText(String.valueOf(u.getId_ulice()));
-        txtNaziv.setText(u.getNaziv());
-         Grad odgovarajućiGrad = gradovi.stream()
-        .filter(g -> g.getPostanski_br() == u.getPostanski_br())
-        .findFirst()
-        .orElse(null);
-
-    if (odgovarajućiGrad != null) {
-        cmbGradovi.setSelectedItem(odgovarajućiGrad.getPostanski_br());
-    } else {
-        cmbGradovi.setSelectedItem("Nepoznato"); // Postavlja podrazumevanu vrednost ako ne pronađe grad
-    }
-    }
-    
      private void setUpTableListenerUlica() {
         tblUlica.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             public void valueChanged(ListSelectionEvent event) {
@@ -224,7 +211,6 @@ public class GradForm extends javax.swing.JFrame {
                             izabranaUlica = pronadjeneUlice.get(0);
                         }
 
-                        popuniFormuUlicom(izabranaUlica);
                     } catch (Exception ex) {
                         java.util.logging.Logger.getLogger(GradForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
                     }
@@ -256,7 +242,7 @@ public class GradForm extends javax.swing.JFrame {
     private Ulica preuzmiPodatkeZaUlicu() throws Exception {
     int ulica_ID = Integer.parseInt(txtUlicaID.getText());
     String naziv = txtNaziv.getText();
-     String izabranGradCmb = (String) cmbGradovi.getSelectedItem();
+    String izabranGradCmb = (String) cmbGradovi.getSelectedItem();
     Grad grad = findGradByPostanskiBr(Integer.parseInt(izabranGradCmb));
     int postanskiBr = grad != null ? grad.getPostanski_br() : 0;
     
@@ -461,7 +447,7 @@ public Grad findGradByPostanskiBr(int postanskiBr) {
                 java.lang.Integer.class, java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
-                false, true, true, true, true
+                false, false, true, true, true
             };
 
             public Class getColumnClass(int columnIndex) {

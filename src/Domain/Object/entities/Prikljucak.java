@@ -178,4 +178,8 @@ public class Prikljucak extends DomainObject{
         return "ID_PRIKLJUCAK"; 
     }
     
+    @Override
+    public String toString() {
+    return naziv;}
+    
 }

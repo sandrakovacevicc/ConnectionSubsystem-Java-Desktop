@@ -6,6 +6,7 @@ package DataBase;
 
 import Domain.Object.DomainObject;
 import Domain.Object.entities.KatastarskaOpstina;
+import Domain.Object.entities.Prikljucak;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.sql.Connection;
@@ -17,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.sql.PreparedStatement;
+import java.sql.Struct;
 
 
 /**
@@ -191,6 +193,31 @@ public class DatabaseBroker {
     return opstine;
     }
     
+    public DomainObject getWithWhere(DomainObject object, String whereClause) throws SQLException {
+    try {
+        Statement statement = connection.createStatement();
+        String query = "SELECT " + object.getAllColumnNames() + " FROM "
+                + object.getTableName() + " WHERE " + whereClause + " ORDER BY " + object.getOrderByColumn();
+        ResultSet rs = statement.executeQuery(query);
+
+        while (rs.next()) {
+        Prikljucak prikljucak= new Prikljucak();
+        prikljucak.setId_prikljucak(rs.getInt("ID_PRIKLJUCAK"));
+        prikljucak.setNaziv(rs.getString("NAZIV"));
+        prikljucak.setOpis(rs.getString("OPIS"));
+        Struct struct = (Struct) rs.getObject("PRIKLJUCAK_PODACI");
+        Object[] attributes = struct.getAttributes();
+        prikljucak.setMesto_prikljucenja((String) attributes[0]);
+        prikljucak.setMesto_vezivanja((String) attributes[1]);
+        prikljucak.setMerni_uredjaj((String) attributes[2]);
+        
+        return prikljucak;
+    }
+    } catch (SQLException ex) {
+        throw ex;
+    }
+    return null;
+    }
     
     
 }

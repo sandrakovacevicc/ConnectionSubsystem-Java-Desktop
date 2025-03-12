@@ -1,9 +1,15 @@
 package controller;
 
 import DataBase.DatabaseBroker;
+import Domain.Object.entities.Direktor;
 import Domain.Object.entities.Grad;
 import Domain.Object.entities.KatastarskaOpstina;
+import Domain.Object.entities.Prikljucak;
+import Domain.Object.entities.Resenje;
 import Domain.Object.entities.Ulica;
+import Domain.Object.entities.UsloviPostavljanja;
+import Domain.Object.entities.UsloviZastite;
+import Domain.Object.entities.Zahtev;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -233,5 +239,142 @@ public class Controller {
             }
         }
     }
+    
+     public List<Prikljucak> loadSvePrikljucke() throws Exception {
+        List<Prikljucak> prikljucak = new LinkedList<>();
+        try {
+            db.connect();
+            prikljucak = (List<Prikljucak>) (Object) db.getAll(new Prikljucak());
+        } catch (Exception ex) {
+            throw ex;
+        } finally {
+            try {
+                db.disconnect();
+            } catch (Exception ex) {
+                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return prikljucak;
+    }
+     
+      public Prikljucak searchPrikljucak(String whereClause) throws Exception {
+        Prikljucak prikljucak = new Prikljucak();
+        try {
+            db.connect();
+            prikljucak = (Prikljucak) (Object) db.getWithWhere(new Prikljucak(), whereClause);
+        } catch (Exception ex) {
+            throw ex;
+        } finally {
+            try {
+                db.disconnect();
+            } catch (Exception ex) {
+                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return prikljucak;
+    }
+      
+      public List<Prikljucak> searchPrikljucci(String whereClause) throws Exception {
+        List<Prikljucak> prikljucak = new LinkedList<>();        
+        try {
+            db.connect();
+            prikljucak = (List<Prikljucak>) (Object) db.getAllWithWhere(new Prikljucak(), whereClause);
+        } catch (Exception ex) {
+            throw ex;
+        } finally {
+            try {
+                db.disconnect();
+            } catch (Exception ex) {
+                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return prikljucak;
+    }
+      
+       public List<Resenje> searchResenja(String whereClause) throws Exception {
+        List<Resenje> resenja = new LinkedList<>();        
+        try {
+            db.connect();
+            resenja = (List<Resenje>) (Object) db.getAllWithWhere(new Resenje(), whereClause);
+        } catch (Exception ex) {
+            throw ex;
+        } finally {
+            try {
+                db.disconnect();
+            } catch (Exception ex) {
+                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return resenja;
+    }
+       
+       public List<Direktor> loadSveDirektore() throws Exception {
+        List<Direktor> direktor = new LinkedList<>();
+        try {
+            db.connect();
+            direktor = (List<Direktor>) (Object) db.getAll(new Direktor());
+        } catch (Exception ex) {
+            throw ex;
+        } finally {
+            try {
+                db.disconnect();
+            } catch (Exception ex) {
+                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return direktor;
+    }
+       
+        public List<Zahtev> loadSveZahteve() throws Exception {
+        List<Zahtev> zahtev = new LinkedList<>();
+        try {
+            db.connect();
+            zahtev = (List<Zahtev>) (Object) db.getAll(new Zahtev());
+        } catch (Exception ex) {
+            throw ex;
+        } finally {
+            try {
+                db.disconnect();
+            } catch (Exception ex) {
+                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return zahtev;
+    }
+
+        public List<UsloviPostavljanja> loadSveUsloveP() throws Exception {
+        List<UsloviPostavljanja> up = new LinkedList<>();
+        try {
+            db.connect();
+            up = (List<UsloviPostavljanja>) (Object) db.getAll(new UsloviPostavljanja());
+        } catch (Exception ex) {
+            throw ex;
+        } finally {
+            try {
+                db.disconnect();
+            } catch (Exception ex) {
+                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return up;
+    }
+        
+         public List<UsloviZastite> loadSveUsloveZ() throws Exception {
+        List<UsloviZastite> uz = new LinkedList<>();
+        try {
+            db.connect();
+            uz = (List<UsloviZastite>) (Object) db.getAll(new UsloviZastite());
+        } catch (Exception ex) {
+            throw ex;
+        } finally {
+            try {
+                db.disconnect();
+            } catch (Exception ex) {
+                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return uz;
+    }
+
 
 }

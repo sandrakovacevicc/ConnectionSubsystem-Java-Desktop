@@ -13,6 +13,7 @@ import Domain.Object.entities.Ulica;
 import Domain.Object.entities.UsloviPostavljanja;
 import Domain.Object.entities.UsloviZastite;
 import Domain.Object.entities.Zahtev;
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -127,7 +128,19 @@ public class PrikljucakForm extends javax.swing.JFrame {
             r.getId_prikljucka(), r.getNaziv_prikljucka()
         });
     }}
-    
+    private void popuniFormuIzabranimPrikljuckom(Prikljucak p) throws Exception {
+        if (p != null) {
+            txtPrikljucakID.setText(String.valueOf(p.getId_prikljucak()));
+            txtNaziv.setText(String.valueOf(p.getNaziv()));
+            txtOpis.setText(String.valueOf(p.getOpis()));
+            txtMerniUredjaj.setText(p.getMerni_uredjaj());
+            txtMestoPrikljucenja.setText(p.getMesto_prikljucenja());
+            txtMestoVezivanja.setText(p.getMesto_vezivanja());
+            txtZastitniUredjaj.setText(String.valueOf(p.getZastitni_uredjaj()));
+            }
+}
+        
+
       private Prikljucak jeIzabranPrikljucak() throws Exception {
         int id_prikljucka = 0;
         String naziv = null;
@@ -143,6 +156,7 @@ public class PrikljucakForm extends javax.swing.JFrame {
         }
 
         Prikljucak p = (Prikljucak) controller.Controller.getInstance().searchPrikljucak("ID_PRIKLJUCAK='" + id_prikljucka+ "'");
+        popuniFormuIzabranimPrikljuckom(p);
         return p;
     }
       private void setUpTableListenerPrikljucak() {
@@ -303,6 +317,8 @@ public class PrikljucakForm extends javax.swing.JFrame {
 
         jLabel6.setText("Opis");
 
+        txtOpis.setHorizontalAlignment(javax.swing.JTextField.LEFT);
+
         jLabel8.setText("Resenje");
 
         tblResenje.setModel(new javax.swing.table.DefaultTableModel(
@@ -342,9 +358,17 @@ public class PrikljucakForm extends javax.swing.JFrame {
 
         jLabel14.setText("Zastitni uredjaj");
 
+        txtMestoVezivanja.setHorizontalAlignment(javax.swing.JTextField.LEFT);
+
         jLabel15.setText("Mesto prikljucenja");
 
+        txtMerniUredjaj.setHorizontalAlignment(javax.swing.JTextField.LEFT);
+
+        txtMestoPrikljucenja.setHorizontalAlignment(javax.swing.JTextField.LEFT);
+
         jLabel16.setText("Merni uredjaj");
+
+        txtZastitniUredjaj.setHorizontalAlignment(javax.swing.JTextField.LEFT);
 
         btnSacuvaj3.setText("Sacuvaj");
         btnSacuvaj3.addActionListener(new java.awt.event.ActionListener() {
@@ -385,7 +409,7 @@ public class PrikljucakForm extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 1159, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 7, Short.MAX_VALUE))
+                        .addGap(0, 70, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
@@ -400,29 +424,28 @@ public class PrikljucakForm extends javax.swing.JFrame {
                                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                             .addComponent(txtNaziv)
                                             .addComponent(txtPrikljucakID)
-                                            .addComponent(txtOpis, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                            .addComponent(txtOpis, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE))
                                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                             .addGroup(layout.createSequentialGroup()
-                                                .addGap(94, 94, 94)
+                                                .addGap(49, 49, 49)
                                                 .addComponent(jLabel8))
                                             .addGroup(layout.createSequentialGroup()
-                                                .addGap(74, 74, 74)
+                                                .addGap(29, 29, 29)
                                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                                     .addComponent(jLabel15)
                                                     .addComponent(jLabel13))
                                                 .addGap(18, 18, 18)
                                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                                    .addComponent(txtMestoPrikljucenja, javax.swing.GroupLayout.DEFAULT_SIZE, 127, Short.MAX_VALUE)
+                                                    .addComponent(txtMestoPrikljucenja, javax.swing.GroupLayout.DEFAULT_SIZE, 168, Short.MAX_VALUE)
                                                     .addComponent(txtMestoVezivanja))
-                                                .addGap(74, 74, 74)
+                                                .addGap(33, 33, 33)
                                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                                     .addComponent(jLabel16)
                                                     .addComponent(jLabel14))
                                                 .addGap(18, 18, 18)
-                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                    .addComponent(txtZastitniUredjaj, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                    .addComponent(txtMerniUredjaj, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                                        .addGap(0, 193, Short.MAX_VALUE)))
+                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                                    .addComponent(txtMerniUredjaj, javax.swing.GroupLayout.DEFAULT_SIZE, 188, Short.MAX_VALUE)
+                                                    .addComponent(txtZastitniUredjaj))))))
                                 .addGap(77, 77, 77))
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -472,7 +495,7 @@ public class PrikljucakForm extends javax.swing.JFrame {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(23, Short.MAX_VALUE)
+                .addContainerGap(21, Short.MAX_VALUE)
                 .addComponent(jLabel1)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
@@ -490,22 +513,27 @@ public class PrikljucakForm extends javax.swing.JFrame {
                                 .addGap(18, 18, 18)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                     .addComponent(jLabel6)
-                                    .addComponent(txtOpis, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                    .addComponent(txtOpis, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addGroup(layout.createSequentialGroup()
                                 .addGap(8, 8, 8)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(jLabel15)
-                                    .addComponent(txtMestoPrikljucenja, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel16)
-                                    .addComponent(txtMerniUredjaj, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                            .addComponent(jLabel15)
+                                            .addComponent(txtMestoPrikljucenja, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(jLabel16))
+                                        .addGap(0, 0, Short.MAX_VALUE))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGap(6, 6, 6)
+                                        .addComponent(txtMerniUredjaj)))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                         .addComponent(jLabel13)
                                         .addGap(15, 15, 15))
                                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                        .addComponent(txtMestoVezivanja, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(txtZastitniUredjaj, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(txtMestoVezivanja, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(txtZastitniUredjaj, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addComponent(jLabel14)))))
                         .addGap(18, 18, 18)
                         .addComponent(jLabel8))
@@ -516,7 +544,6 @@ public class PrikljucakForm extends javax.swing.JFrame {
                         .addComponent(btnSacuvajPrikljucak)))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -528,7 +555,7 @@ public class PrikljucakForm extends javax.swing.JFrame {
                                 .addComponent(cmbZahtev, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 29, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 28, Short.MAX_VALUE)
                                 .addComponent(jLabel4)
                                 .addGap(18, 18, 18)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -633,8 +660,6 @@ public class PrikljucakForm extends javax.swing.JFrame {
     private javax.swing.JButton btnIzmeni;
     private javax.swing.JButton btnIzmeniPrikljucak;
     private javax.swing.JButton btnObrisi;
-    private javax.swing.JButton btnSacuvaj;
-    private javax.swing.JButton btnSacuvaj1;
     private javax.swing.JButton btnSacuvaj3;
     private javax.swing.JButton btnSacuvajPrikljucak;
     private javax.swing.JComboBox<String> cmbDirektor;

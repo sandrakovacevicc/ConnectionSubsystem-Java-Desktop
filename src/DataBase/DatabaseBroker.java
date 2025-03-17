@@ -210,7 +210,7 @@ public class DatabaseBroker {
         prikljucak.setMesto_prikljucenja((String) attributes[0]);
         prikljucak.setMesto_vezivanja((String) attributes[1]);
         prikljucak.setMerni_uredjaj((String) attributes[2]);
-        
+        prikljucak.setZastitni_uredjaj((String) attributes[3]);
         return prikljucak;
     }
     } catch (SQLException ex) {

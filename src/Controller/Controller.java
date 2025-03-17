@@ -16,6 +16,8 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
 
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
@@ -221,24 +223,29 @@ public class Controller {
         }
     }
     
-    public void updateUlica(Ulica u, String setClause) throws Exception {
-          try {
-            db.connect();
-            int answer = JOptionPane.showConfirmDialog(null, "Zelite li da izmenite nalog?", "Izmena", JOptionPane.YES_NO_OPTION);
-            if (answer == JOptionPane.YES_OPTION) {
-                db.updatePartial(u, setClause);
-                JOptionPane.showMessageDialog(null, "Uspesno ste izmenili");
-            }
+   public void updateUlica(Ulica u, String setClause) throws Exception {
+    try {
+        db.connect();
+        int answer = JOptionPane.showConfirmDialog(null, "Želite li da izmenite ulicu?", "Izmena", JOptionPane.YES_NO_OPTION);
+        if (answer == JOptionPane.YES_OPTION) {
+            db.updatePartial(u, setClause);
+            JOptionPane.showMessageDialog(null, "Uspešno ste izmenili ulicu.");
+        }
+    } catch (SQLIntegrityConstraintViolationException ex) {
+        JOptionPane.showMessageDialog(null, "Greška: Opština ne postoji u bazi!", "Greška", JOptionPane.ERROR_MESSAGE);
+    } catch (SQLException ex) {
+        JOptionPane.showMessageDialog(null, "SQL Greška: " + ex.getMessage(), "Greška", JOptionPane.ERROR_MESSAGE);
+    } catch (Exception ex) {
+        JOptionPane.showMessageDialog(null, "Došlo je do greške: " + ex.getMessage(), "Greška", JOptionPane.ERROR_MESSAGE);
+    } finally {
+        try {
+            db.disconnect();
         } catch (Exception ex) {
-            throw ex;
-        } finally {
-            try {
-                db.disconnect();
-            } catch (Exception ex) {
-                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+}
+
     
      public List<Prikljucak> loadSvePrikljucke() throws Exception {
         List<Prikljucak> prikljucak = new LinkedList<>();

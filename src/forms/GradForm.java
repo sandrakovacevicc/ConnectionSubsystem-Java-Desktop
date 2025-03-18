@@ -523,7 +523,7 @@ if (postanskibr != originalPostanskiBr) {
                                         .addComponent(txtUlicaID, javax.swing.GroupLayout.PREFERRED_SIZE, 216, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addComponent(txtNaziv, javax.swing.GroupLayout.PREFERRED_SIZE, 216, javax.swing.GroupLayout.PREFERRED_SIZE))
                                     .addComponent(cmbGradovi, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 216, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(140, 140, 140)
+                                .addGap(137, 137, 137)
                                 .addComponent(btnSacuvaj))
                             .addComponent(cmbOpstina, javax.swing.GroupLayout.PREFERRED_SIZE, 216, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))

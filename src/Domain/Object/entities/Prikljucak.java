@@ -112,7 +112,7 @@ public class Prikljucak extends DomainObject{
     @Override
     public String getColumnValues() {
     return String.format(
-        "'%d', '%s', '%s', NEW PRIKLJUCAK_PODACI(%s, '%s', '%s', '%s')",
+        "'%d', '%s', '%s', NEW PRIKLJUCAK_PODACI('%s', '%s', '%s', '%s')",
         id_prikljucak,
         naziv,
         opis,
@@ -126,7 +126,7 @@ public class Prikljucak extends DomainObject{
 
     @Override
     public String getUpdateClause() {
-        return String.format("ID_PRIKLJUCAK = '%d', NAZIV = '%s', OPIS = '%s', PRIKLJUCAK_PODACI = PRIKLJUCAK_PODACI(%s, '%s', '%s', '%s')",
+        return String.format("ID_PRIKLJUCAK = '%d', NAZIV = '%s', OPIS = '%s', PRIKLJUCAK_PODACI = PRIKLJUCAK_PODACI('%s', '%s', '%s', '%s')",
                 id_prikljucak,
                 naziv,
                 opis,

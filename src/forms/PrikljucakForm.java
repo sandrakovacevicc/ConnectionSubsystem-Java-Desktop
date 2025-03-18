@@ -13,12 +13,16 @@ import Domain.Object.entities.Ulica;
 import Domain.Object.entities.UsloviPostavljanja;
 import Domain.Object.entities.UsloviZastite;
 import Domain.Object.entities.Zahtev;
+import controller.Controller;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -53,6 +57,7 @@ public class PrikljucakForm extends javax.swing.JFrame {
         setLocationRelativeTo(null);
         ucitajPodatkeUFormu();
         setUpTableListenerPrikljucak();
+        setUpTableListenerResenje();
     }
 
         private void ucitajPodatkeUFormu() throws Exception {
@@ -65,19 +70,20 @@ public class PrikljucakForm extends javax.swing.JFrame {
     }
     private void ucitajPrikljucke() throws Exception {
     DefaultTableModel model = (DefaultTableModel) tblPrikljucak.getModel();
+    model.setRowCount(0);  
+
     prikljucci = controller.Controller.getInstance().loadSvePrikljucke();
 
     for (Prikljucak p : prikljucci) {
         model.addRow(new Object[]{p.getId_prikljucak(), p.getNaziv(), p.getOpis()});
-     }
-    
+    }
+
     cmbPrikljucak.removeAllItems(); 
     for (Prikljucak p : prikljucci) {
         cmbPrikljucak.addItem(p.toString());  
     }
-    
-    }
-    
+}
+
     
     private void ucitajDirektore() throws Exception {
     direktori = controller.Controller.getInstance().loadSveDirektore();
@@ -141,31 +147,134 @@ public class PrikljucakForm extends javax.swing.JFrame {
 }
         
 
-      private Prikljucak jeIzabranPrikljucak() throws Exception {
-        int id_prikljucka = 0;
-        String naziv = null;
-        String opis = null;
+    private Prikljucak jeIzabranPrikljucak() throws Exception {
+    int id_prikljucka = 0;
 
-        int izabranPrikljucakIndex = tblPrikljucak.getSelectedRow();
-        if (izabranPrikljucakIndex >= 0) {
-            DefaultTableModel model = (DefaultTableModel) tblPrikljucak.getModel();
-
-            id_prikljucka = (Integer) model.getValueAt(izabranPrikljucakIndex, 0);
-            naziv = (String) model.getValueAt(izabranPrikljucakIndex, 1);
-            opis = (String) model.getValueAt(izabranPrikljucakIndex, 2);
-        }
-
-        Prikljucak p = (Prikljucak) controller.Controller.getInstance().searchPrikljucak("ID_PRIKLJUCAK='" + id_prikljucka+ "'");
-        popuniFormuIzabranimPrikljuckom(p);
-        return p;
+    int izabranPrikljucakIndex = tblPrikljucak.getSelectedRow();
+    if (izabranPrikljucakIndex >= 0) {
+        DefaultTableModel model = (DefaultTableModel) tblPrikljucak.getModel();
+        id_prikljucka = (Integer) model.getValueAt(izabranPrikljucakIndex, 0);
+        System.out.println("Selected Prikljucak ID: " + id_prikljucka);
     }
-      private void setUpTableListenerPrikljucak() {
+
+    Prikljucak p = controller.Controller.getInstance().searchPrikljucak("ID_PRIKLJUCAK='" + id_prikljucka + "'");
+    if (p != null) {
+        System.out.println("Naziv Prikljucka: " + p.getId_prikljucak());
+    }
+    popuniFormuIzabranimPrikljuckom(p);
+    return p;
+}
+
+
+
+      
+     private Resenje jeIzabranoResenje() {
+    int id_resenja = 0;
+    Date datum = null;
+    String broj = null;
+    int id_direktora = 0;
+    int br_zahteva = 0;
+    int id_uslovP = 0;
+    int id_uslovZ = 0;
+    int id_prikljucka = 0;
+    String naziv_prikljucka = null;
+
+    int izabranoResenjeIndex = tblResenje.getSelectedRow();
+    if (izabranoResenjeIndex >= 0) {
+        DefaultTableModel model = (DefaultTableModel) tblResenje.getModel();
+        id_resenja = (Integer) model.getValueAt(izabranoResenjeIndex, 0);
+        
+
+        java.sql.Date sqlDate = (java.sql.Date) model.getValueAt(izabranoResenjeIndex, 1);
+        datum = sqlDate != null ? new Date(sqlDate.getTime()) : null; 
+
+        broj = (String) model.getValueAt(izabranoResenjeIndex, 2);
+        id_direktora = (Integer) model.getValueAt(izabranoResenjeIndex, 3);
+        br_zahteva = (Integer) model.getValueAt(izabranoResenjeIndex, 4);
+        id_uslovP = (Integer) model.getValueAt(izabranoResenjeIndex, 5);
+        id_uslovZ = (Integer) model.getValueAt(izabranoResenjeIndex, 6);
+        id_prikljucka = (Integer) model.getValueAt(izabranoResenjeIndex, 7);
+        naziv_prikljucka = (String) model.getValueAt(izabranoResenjeIndex, 8);
+    }
+
+    return new Resenje(id_resenja, datum, broj, id_direktora, br_zahteva, id_uslovP, id_uslovZ, id_prikljucka, naziv_prikljucka);
+}
+     
+    private void popuniFormuResenjem(Resenje r) throws Exception {
+    txtIDResenja.setText(String.valueOf(r.getId_resenja()));
+    txtBrResenja.setText(r.getBroj());
+    cmbDirektor.setSelectedItem(String.valueOf(r.getId_direktora()));
+    try {
+        ucitajDirektore();
+    } catch (Exception ex) {
+        java.util.logging.Logger.getLogger(GradForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+    }
+
+    List<Direktor> direktor = Controller.getInstance().searchDirektori("ID_DIREKTORA='" + r.getId_direktora() + "'");
+    if (!direktor.isEmpty()) {
+    cmbDirektor.setSelectedItem(direktor.get(0).toString()); 
+    }
+    cmbUslovPostavljanja.setSelectedItem(String.valueOf(r.getId_uslovP()));
+    try {
+        ucitajUslovePostavljanja();
+    } catch (Exception ex) {
+        java.util.logging.Logger.getLogger(GradForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+    }
+
+    List<UsloviPostavljanja> usloviP = Controller.getInstance().searchUsloviP("ID_USLOVP='" + r.getId_uslovP()+ "'");
+    if (!usloviP.isEmpty()) {
+    cmbUslovPostavljanja.setSelectedItem(usloviP.get(0).toString()); 
+    }
+     cmbUslovZastite.setSelectedItem(String.valueOf(r.getId_uslovZ()));
+    try {
+        ucitajUsloveZastite();
+    } catch (Exception ex) {
+        java.util.logging.Logger.getLogger(GradForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+    }
+
+    List<UsloviZastite> usloviZ = Controller.getInstance().searchUsloviZ("ID_USLOVZ='" + r.getId_uslovZ()+ "'");
+    if (!usloviZ.isEmpty()) {
+    cmbUslovZastite.setSelectedItem(usloviZ.get(0).toString()); 
+    }
+     cmbZahtev.setSelectedItem(String.valueOf(r.getBr_zahteva()));
+    try {
+        ucitajZahteve();
+    } catch (Exception ex) {
+        java.util.logging.Logger.getLogger(GradForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+    }
+
+    List<Zahtev> zahtev = Controller.getInstance().searchZahteve("BR_ZAHTEVA='" + r.getBr_zahteva()+ "'");
+    if (!zahtev.isEmpty()) {
+    cmbZahtev.setSelectedItem(zahtev.get(0).toString()); 
+    }
+    try {
+        ucitajPrikljucke();
+    } catch (Exception ex) {
+        java.util.logging.Logger.getLogger(GradForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+    }
+
+    List<Prikljucak> prikljucak = Controller.getInstance().searchPrikljucke("ID_PRIKLJUCAK='" + r.getId_prikljucka()+ "'");
+    if (!prikljucak.isEmpty()) {
+    cmbPrikljucak.setSelectedItem(prikljucak.get(0).toString()); 
+    }
+ }
+
+
+
+    private void setUpTableListenerPrikljucak() {
     tblPrikljucak.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
         public void valueChanged(ListSelectionEvent event) {
             if (!event.getValueIsAdjusting()) {
                 try {
                     Prikljucak izabraniPrikljucak = jeIzabranPrikljucak();
-                    pronadjenPrikljucak = controller.Controller.getInstance().searchPrikljucci("ID_PRIKLJUCAK='" + izabraniPrikljucak.getId_prikljucak()+ "'");
+
+                    if (izabraniPrikljucak == null) {
+                        System.out.println("Izabrani priključak je null!");
+                        return; 
+                    }
+
+                    pronadjenPrikljucak = controller.Controller.getInstance()
+                        .searchPrikljucci("ID_PRIKLJUCAK='" + izabraniPrikljucak.getId_prikljucak() + "'");
 
                     if (pronadjenPrikljucak != null && !pronadjenPrikljucak.isEmpty()) {
                         izabraniPrikljucak = pronadjenPrikljucak.get(0);
@@ -174,14 +283,40 @@ public class PrikljucakForm extends javax.swing.JFrame {
                     popuniTabeluResenjima(izabraniPrikljucak.getId_prikljucak());
                     originalneVrednostiResenje.clear();
                     sacuvajOriginalneVrednosti(tblResenje);
+
                 } catch (Exception ex) {
-                    java.util.logging.Logger.getLogger(GradForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+                    java.util.logging.Logger.getLogger(GradForm.class.getName())
+                        .log(java.util.logging.Level.SEVERE, null, ex);
                 }
             }
         }
     });
-    
 }
+
+    
+
+      
+        private void setUpTableListenerResenje() {
+        tblResenje.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            public void valueChanged(ListSelectionEvent event) {
+                if (!event.getValueIsAdjusting()) {
+                    try {
+                        Resenje izabranoResenje= jeIzabranoResenje();
+                        pronadjenaResenja = Controller.getInstance().searchResenja("ID_RESENJA='" + String.valueOf(izabranoResenje.getId_resenja()) + "'");
+
+                        if (pronadjenaResenja != null && !pronadjenaResenja.isEmpty()) {
+                            izabranoResenje = pronadjenaResenja.get(0);
+                        }
+                        popuniFormuResenjem(izabranoResenje);
+
+                    } catch (Exception ex) {
+                        java.util.logging.Logger.getLogger(GradForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+                    }
+                }
+            }
+        }
+        );
+    }
       
        private void sacuvajOriginalneVrednosti(JTable table) {
         DefaultTableModel model = (DefaultTableModel) tblResenje.getModel();
@@ -200,6 +335,21 @@ public class PrikljucakForm extends javax.swing.JFrame {
             originalneVrednostiResenje.put(i, new String[]{String.valueOf(id_resenja), String.valueOf(datum), broj, String.valueOf(id_direktora),String.valueOf(br_zahteva),String.valueOf(id_uslovp),String.valueOf(id_uslovz),String.valueOf(id_prikljucka),naziv_prikljucka});
         }
     }
+       
+       private Prikljucak preuzmiPodatkeZaPrikljucak() throws Exception {
+        int prikljucakID = Integer.parseInt(txtPrikljucakID.getText());
+        String naziv = txtNaziv.getText();
+        String opis = txtOpis.getText();
+        String mestoPrikljucenja = txtMestoPrikljucenja.getText();
+        String mestoVezivanja = txtMestoVezivanja.getText();
+        String merniUredjaj = txtMerniUredjaj.getText();
+        String zastitniUredjaj = txtZastitniUredjaj.getText();
+
+        Prikljucak p = new Prikljucak(prikljucakID, naziv, opis, mestoPrikljucenja, mestoVezivanja, merniUredjaj, zastitniUredjaj);
+
+        return p;
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -407,46 +557,48 @@ public class PrikljucakForm extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 1159, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 70, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel2)
+                                    .addComponent(jLabel5)
+                                    .addComponent(jLabel6))
+                                .addGap(36, 36, 36)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(txtNaziv)
+                                    .addComponent(txtPrikljucakID)
+                                    .addComponent(txtOpis, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGap(49, 49, 49)
+                                        .addComponent(jLabel8))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGap(29, 29, 29)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(jLabel15)
+                                            .addComponent(jLabel13))
+                                        .addGap(18, 18, 18)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                            .addComponent(txtMestoPrikljucenja, javax.swing.GroupLayout.DEFAULT_SIZE, 168, Short.MAX_VALUE)
+                                            .addComponent(txtMestoVezivanja))
+                                        .addGap(33, 33, 33)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                            .addComponent(jLabel16)
+                                            .addComponent(jLabel14))
+                                        .addGap(18, 18, 18)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                            .addComponent(txtMerniUredjaj, javax.swing.GroupLayout.DEFAULT_SIZE, 188, Short.MAX_VALUE)
+                                            .addComponent(txtZastitniUredjaj))))))
+                        .addGap(36, 36, 36)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(btnIzmeniPrikljucak)
+                            .addComponent(btnSacuvajPrikljucak))
+                        .addGap(41, 41, 41))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(jLabel2)
-                                            .addComponent(jLabel5)
-                                            .addComponent(jLabel6))
-                                        .addGap(36, 36, 36)
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                            .addComponent(txtNaziv)
-                                            .addComponent(txtPrikljucakID)
-                                            .addComponent(txtOpis, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addGroup(layout.createSequentialGroup()
-                                                .addGap(49, 49, 49)
-                                                .addComponent(jLabel8))
-                                            .addGroup(layout.createSequentialGroup()
-                                                .addGap(29, 29, 29)
-                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                    .addComponent(jLabel15)
-                                                    .addComponent(jLabel13))
-                                                .addGap(18, 18, 18)
-                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                                    .addComponent(txtMestoPrikljucenja, javax.swing.GroupLayout.DEFAULT_SIZE, 168, Short.MAX_VALUE)
-                                                    .addComponent(txtMestoVezivanja))
-                                                .addGap(33, 33, 33)
-                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                                    .addComponent(jLabel16)
-                                                    .addComponent(jLabel14))
-                                                .addGap(18, 18, 18)
-                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                                    .addComponent(txtMerniUredjaj, javax.swing.GroupLayout.DEFAULT_SIZE, 188, Short.MAX_VALUE)
-                                                    .addComponent(txtZastitniUredjaj))))))
-                                .addGap(77, 77, 77))
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 1159, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(layout.createSequentialGroup()
@@ -486,11 +638,8 @@ public class PrikljucakForm extends javax.swing.JFrame {
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(btnIzmeni)
                                     .addComponent(btnObrisi)
-                                    .addComponent(btnSacuvaj3))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(btnIzmeniPrikljucak)
-                            .addComponent(btnSacuvajPrikljucak)))))
+                                    .addComponent(btnSacuvaj3))))
+                        .addGap(0, 70, Short.MAX_VALUE))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -538,7 +687,7 @@ public class PrikljucakForm extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addComponent(jLabel8))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(58, 58, 58)
+                        .addGap(52, 52, 52)
                         .addComponent(btnIzmeniPrikljucak)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(btnSacuvajPrikljucak)))
@@ -594,7 +743,16 @@ public class PrikljucakForm extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnSacuvajPrikljucakActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSacuvajPrikljucakActionPerformed
-       
+        try {
+            Prikljucak prikljucak = preuzmiPodatkeZaPrikljucak();
+
+            controller.Controller.getInstance().insertPrikljucak(prikljucak);
+            ucitajPrikljucke();
+
+        } catch (Exception ex) {
+            Logger.getLogger(PrikljucakForm.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(null, "Došlo je do greške: " + ex.getMessage(), "Greška", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_btnSacuvajPrikljucakActionPerformed
 
     private void btnIzmeniActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIzmeniActionPerformed
@@ -602,11 +760,30 @@ public class PrikljucakForm extends javax.swing.JFrame {
     }//GEN-LAST:event_btnIzmeniActionPerformed
 
     private void btnObrisiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnObrisiActionPerformed
-       
+       try {
+            //Resenje r = jeIzabranPrikljucak();
+
+            //Controller.getInstance().deleteResenje(r);
+
+            //int idResenja = Integer.parseInt(cmbGradovi.getSelectedItem().toString());
+            //popuniTabeluUlicama(postanskiBr);
+        } catch (Exception ex) {
+            java.util.logging.Logger.getLogger(GradForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(null, "Došlo je do greške: " + ex.getMessage(), "Greška", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_btnObrisiActionPerformed
 
     private void btnIzmeniPrikljucakActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIzmeniPrikljucakActionPerformed
-        // TODO add your handling code here:
+        try {
+            Prikljucak p = preuzmiPodatkeZaPrikljucak();
+
+            controller.Controller.getInstance().updatePrikljucak(p);
+            ucitajPrikljucke();
+            popuniTabeluResenjima(p.getId_prikljucak());
+        } catch (Exception ex) {
+            Logger.getLogger(PrikljucakForm.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(null, "Došlo je do greške: " + ex.getMessage(), "Greška", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_btnIzmeniPrikljucakActionPerformed
 
     private void btnSacuvaj3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSacuvaj3ActionPerformed

@@ -137,9 +137,9 @@ public class Resenje extends DomainObject{
 
     @Override
     public String getColumnValues() {
-    SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yy");
+    SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
 
-        String datumd = datum != null ? "TO_DATE('" + sdf.format(datum) + "', 'DD-MM-YY')" : "NULL";
+        String datumd = datum != null ? "TO_DATE('" + sdf.format(datum) + "', 'dd-MM-yyyy')" : "NULL";
 
         return String.format("%d, %s, %s, %d, %d, %d, %d, %d, '%s'",
                 id_resenja,
@@ -174,7 +174,7 @@ public class Resenje extends DomainObject{
     @Override
     public List<DomainObject> getObjectsFromResultSet(ResultSet rs) throws SQLException {
     List<DomainObject> resenja =new ArrayList<>();
-        SimpleDateFormat format = new SimpleDateFormat("dd-MMM-yy");
+        SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
         
         while (rs.next()){
               int id_resenja =rs.getInt("ID_RESENJA");

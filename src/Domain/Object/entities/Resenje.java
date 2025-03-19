@@ -136,30 +136,44 @@ public class Resenje extends DomainObject{
     }
 
     @Override
-    public String getColumnValues() {
+public String getColumnValues() {
+    String nazivPrikljuckaValue = (naziv_prikljucka != null && !naziv_prikljucka.isEmpty()) ? "'" + naziv_prikljucka + "'" : "NULL";
+
     SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+    String datumd = datum != null ? "TO_DATE('" + sdf.format(datum) + "', 'dd-MM-yyyy')" : "NULL";
 
-        String datumd = datum != null ? "TO_DATE('" + sdf.format(datum) + "', 'dd-MM-yyyy')" : "NULL";
+    return String.format("%d, %s, '%s', %d, %d, %d, %d, %d, %s",
+            id_resenja,
+            datumd,
+            broj,
+            id_direktora,
+            br_zahteva,
+            id_uslovP,
+            id_uslovZ,
+            id_prikljucka,
+            nazivPrikljuckaValue); 
+}
 
-        return String.format("%d, %s, %s, %d, %d, %d, %d, %d, '%s'",
-                id_resenja,
-                datumd,
-                broj,
-                id_direktora,
-                br_zahteva,
-                id_uslovP,
-                id_uslovZ,
-                id_prikljucka,
-                naziv_prikljucka);    }
+   @Override
+public String getUpdateClause() {
+    SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+    String datumd = datum != null ? "TO_DATE('" + sdf.format(datum) + "', 'dd-MM-yyyy')" : "NULL";
 
-    @Override
-    public String getUpdateClause() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
+    return String.format("ID_RESENJA = '%d', DATUM = %s, BROJ = '%s', ID_DIREKTORA = %d, BR_ZAHTEVA = %d, ID_USLOVP = %d, ID_USLOVZ = %d, ID_PRIKLJUCAK = %d",
+            id_resenja,
+            datumd,  
+            broj,
+            id_direktora,
+            br_zahteva,
+            id_uslovP,
+            id_uslovZ,
+            id_prikljucka);
+}
+
 
     @Override
     public String getWhereIdClause() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        throw new UnsupportedOperationException("Not supported yet.");   
     }
 
     @Override
@@ -168,7 +182,7 @@ public class Resenje extends DomainObject{
 
     @Override
     public String getDeleteWhereClause() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        return String.format("ID_RESENJA = %d", this.getId_resenja());  
     }
 
     @Override

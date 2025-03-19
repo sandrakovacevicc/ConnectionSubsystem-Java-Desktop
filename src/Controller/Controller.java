@@ -205,22 +205,28 @@ public class Controller {
     
     public void deleteUlica(Ulica u) throws Exception {
         try {
-            db.connect();
-            int answer = JOptionPane.showConfirmDialog(null, "Zaista zelite da obrisete ulicu?", "Brisanje", JOptionPane.YES_NO_OPTION);
-            if (answer == 1) {
-                return;
-            }
-            db.delete(u);
-
-        } catch (Exception ex) {
-            throw ex;
-        } finally {
-            try {
-                db.disconnect();
-            } catch (Exception ex) {
-                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
-            }
+        db.connect();
+        int answer = JOptionPane.showConfirmDialog(null, "Zaista želite da obrišete ulicu?", "Brisanje", JOptionPane.YES_NO_OPTION);
+        if (answer == JOptionPane.NO_OPTION) {
+            return;
         }
+
+        try {
+            db.delete(u);
+            JOptionPane.showMessageDialog(null, "Ulica uspešno obrisana.", "Brisanje", JOptionPane.INFORMATION_MESSAGE);
+        } catch (SQLIntegrityConstraintViolationException ex) {
+            JOptionPane.showMessageDialog(null, "Ne možete obrisati ovu ulicu jer postoje povezani zapisi.", "Greška", JOptionPane.ERROR_MESSAGE);
+        }
+
+    } catch (SQLException ex) {
+        JOptionPane.showMessageDialog(null, "Došlo je do greške pri brisanju ulice.", "Greška", JOptionPane.ERROR_MESSAGE);
+    } finally {
+        try {
+            db.disconnect();
+        } catch (Exception ex) {
+            Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
     }
     
    public void updateUlica(Ulica u, String setClause) throws Exception {
@@ -505,6 +511,71 @@ public class Controller {
         }
         return prikljucak;
     }
+      public void deleteResenje(Resenje r) throws Exception {
+    try {
+        db.connect();
+        int answer = JOptionPane.showConfirmDialog(null, "Zaista želite da obrišete rešenje?", "Brisanje", JOptionPane.YES_NO_OPTION);
+        if (answer == JOptionPane.NO_OPTION) {
+            return;
+        }
+
+        try {
+            db.delete(r);
+            JOptionPane.showMessageDialog(null, "Rešenje uspešno obrisano.", "Brisanje", JOptionPane.INFORMATION_MESSAGE);
+        } catch (SQLIntegrityConstraintViolationException ex) {
+            JOptionPane.showMessageDialog(null, "Ne možete obrisati ovo rešenje jer postoje povezani zapisi.", "Greška", JOptionPane.ERROR_MESSAGE);
+        }
+
+    } catch (SQLException ex) {
+        JOptionPane.showMessageDialog(null, "Došlo je do greške pri brisanju rešenja.", "Greška", JOptionPane.ERROR_MESSAGE);
+    } finally {
+        try {
+            db.disconnect();
+        } catch (Exception ex) {
+            Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+}
+      
+       public void insertResenje(Resenje r) throws Exception {
+        try {
+            db.connect();
+            db.insert(r);
+            JOptionPane.showMessageDialog(null, "Uspesno ste uneli");
+
+        } catch (Exception ex) {
+            throw ex;
+        } finally {
+            try {
+                db.disconnect();
+            } catch (Exception ex) {
+                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+       
+          public void updateResenje(Resenje r) throws Exception {
+        try {
+            db.connect();
+            int answer = JOptionPane.showConfirmDialog(null, "Zelite li da izmenite resenje?", "Izmena", JOptionPane.YES_NO_OPTION);
+            if (answer == 1) {
+                return;
+            }
+            db.update(r);
+            JOptionPane.showMessageDialog(null, "Uspesno ste izmenili");
+
+        } catch (Exception ex) {
+            throw ex;
+        } finally {
+            try {
+                db.disconnect();
+            } catch (Exception ex) {
+                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+
+    
 
 
 }

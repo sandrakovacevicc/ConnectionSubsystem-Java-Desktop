@@ -28,6 +28,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 
+
 /**
  *
  * @author korisnik
@@ -58,6 +59,7 @@ public class PrikljucakForm extends javax.swing.JFrame {
         ucitajPodatkeUFormu();
         setUpTableListenerPrikljucak();
         setUpTableListenerResenje();
+        
     }
 
         private void ucitajPodatkeUFormu() throws Exception {
@@ -200,9 +202,19 @@ public class PrikljucakForm extends javax.swing.JFrame {
     return new Resenje(id_resenja, datum, broj, id_direktora, br_zahteva, id_uslovP, id_uslovZ, id_prikljucka, naziv_prikljucka);
 }
      
-    private void popuniFormuResenjem(Resenje r) throws Exception {
+   private void popuniFormuResenjem(Resenje r) throws Exception {
     txtIDResenja.setText(String.valueOf(r.getId_resenja()));
     txtBrResenja.setText(r.getBroj());
+
+    if (r.getDatum() != null) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+        txtDatum.setText(dateFormat.format(r.getDatum()));
+    } else {
+
+        txtDatum.setText("");
+    }
+
+
     cmbDirektor.setSelectedItem(String.valueOf(r.getId_direktora()));
     try {
         ucitajDirektore();
@@ -212,8 +224,9 @@ public class PrikljucakForm extends javax.swing.JFrame {
 
     List<Direktor> direktor = Controller.getInstance().searchDirektori("ID_DIREKTORA='" + r.getId_direktora() + "'");
     if (!direktor.isEmpty()) {
-    cmbDirektor.setSelectedItem(direktor.get(0).toString()); 
+        cmbDirektor.setSelectedItem(direktor.get(0).toString());
     }
+
     cmbUslovPostavljanja.setSelectedItem(String.valueOf(r.getId_uslovP()));
     try {
         ucitajUslovePostavljanja();
@@ -221,43 +234,47 @@ public class PrikljucakForm extends javax.swing.JFrame {
         java.util.logging.Logger.getLogger(GradForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
     }
 
-    List<UsloviPostavljanja> usloviP = Controller.getInstance().searchUsloviP("ID_USLOVP='" + r.getId_uslovP()+ "'");
+    List<UsloviPostavljanja> usloviP = Controller.getInstance().searchUsloviP("ID_USLOVP='" + r.getId_uslovP() + "'");
     if (!usloviP.isEmpty()) {
-    cmbUslovPostavljanja.setSelectedItem(usloviP.get(0).toString()); 
+        cmbUslovPostavljanja.setSelectedItem(usloviP.get(0).toString());
     }
-     cmbUslovZastite.setSelectedItem(String.valueOf(r.getId_uslovZ()));
+
+    cmbUslovZastite.setSelectedItem(String.valueOf(r.getId_uslovZ()));
     try {
         ucitajUsloveZastite();
     } catch (Exception ex) {
         java.util.logging.Logger.getLogger(GradForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
     }
 
-    List<UsloviZastite> usloviZ = Controller.getInstance().searchUsloviZ("ID_USLOVZ='" + r.getId_uslovZ()+ "'");
+    List<UsloviZastite> usloviZ = Controller.getInstance().searchUsloviZ("ID_USLOVZ='" + r.getId_uslovZ() + "'");
     if (!usloviZ.isEmpty()) {
-    cmbUslovZastite.setSelectedItem(usloviZ.get(0).toString()); 
+        cmbUslovZastite.setSelectedItem(usloviZ.get(0).toString());
     }
-     cmbZahtev.setSelectedItem(String.valueOf(r.getBr_zahteva()));
+
+    cmbZahtev.setSelectedItem(String.valueOf(r.getBr_zahteva()));
     try {
         ucitajZahteve();
     } catch (Exception ex) {
         java.util.logging.Logger.getLogger(GradForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
     }
 
-    List<Zahtev> zahtev = Controller.getInstance().searchZahteve("BR_ZAHTEVA='" + r.getBr_zahteva()+ "'");
+    List<Zahtev> zahtev = Controller.getInstance().searchZahteve("BR_ZAHTEVA='" + r.getBr_zahteva() + "'");
     if (!zahtev.isEmpty()) {
-    cmbZahtev.setSelectedItem(zahtev.get(0).toString()); 
+        cmbZahtev.setSelectedItem(zahtev.get(0).toString());
     }
+
     try {
         ucitajPrikljucke();
     } catch (Exception ex) {
         java.util.logging.Logger.getLogger(GradForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
     }
 
-    List<Prikljucak> prikljucak = Controller.getInstance().searchPrikljucke("ID_PRIKLJUCAK='" + r.getId_prikljucka()+ "'");
+    List<Prikljucak> prikljucak = Controller.getInstance().searchPrikljucke("ID_PRIKLJUCAK='" + r.getId_prikljucka() + "'");
     if (!prikljucak.isEmpty()) {
-    cmbPrikljucak.setSelectedItem(prikljucak.get(0).toString()); 
+        cmbPrikljucak.setSelectedItem(prikljucak.get(0).toString());
     }
- }
+}
+
 
 
 
@@ -297,25 +314,22 @@ public class PrikljucakForm extends javax.swing.JFrame {
 
       
         private void setUpTableListenerResenje() {
-        tblResenje.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-            public void valueChanged(ListSelectionEvent event) {
-                if (!event.getValueIsAdjusting()) {
-                    try {
-                        Resenje izabranoResenje= jeIzabranoResenje();
-                        pronadjenaResenja = Controller.getInstance().searchResenja("ID_RESENJA='" + String.valueOf(izabranoResenje.getId_resenja()) + "'");
-
-                        if (pronadjenaResenja != null && !pronadjenaResenja.isEmpty()) {
-                            izabranoResenje = pronadjenaResenja.get(0);
-                        }
-                        popuniFormuResenjem(izabranoResenje);
-
-                    } catch (Exception ex) {
-                        java.util.logging.Logger.getLogger(GradForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        tblResenje.getSelectionModel().addListSelectionListener((ListSelectionEvent event) -> {
+            if (!event.getValueIsAdjusting()) {
+                try {
+                    Resenje izabranoResenje= jeIzabranoResenje();
+                    pronadjenaResenja = Controller.getInstance().searchResenja("ID_RESENJA='" + String.valueOf(izabranoResenje.getId_resenja()) + "'");
+                    
+                    if (pronadjenaResenja != null && !pronadjenaResenja.isEmpty()) {
+                        izabranoResenje = pronadjenaResenja.get(0);
                     }
+                    popuniFormuResenjem(izabranoResenje);
+                    
+                } catch (Exception ex) {
+                    java.util.logging.Logger.getLogger(GradForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
                 }
             }
-        }
-        );
+        });
     }
       
        private void sacuvajOriginalneVrednosti(JTable table) {
@@ -349,6 +363,116 @@ public class PrikljucakForm extends javax.swing.JFrame {
 
         return p;
     }
+   public Resenje preuzmiPodatkeZaResenje() throws Exception {
+        int resenjeID;
+        try {
+            resenjeID = Integer.parseInt(txtIDResenja.getText().trim());
+        } catch (NumberFormatException e) {
+            throw new Exception("Neispravan ID rešenja. Unesite broj.");
+        }
+
+        String broj = txtBrResenja.getText().trim();
+        String rawDatum = txtDatum.getText().trim();
+        SimpleDateFormat inputFormat = new SimpleDateFormat("dd-MM-yyyy");
+        Date datum = null;
+
+        if (rawDatum == null || rawDatum.isEmpty()) {
+            throw new Exception("Datum ne može biti prazan.");
+        }
+
+        try {
+            datum = inputFormat.parse(rawDatum);
+        } catch (ParseException e) {
+            throw new Exception("Neispravan format datuma. Očekivani format je dd-MM-yyyy.");
+        }
+
+        if (cmbDirektor.getSelectedItem() == null || cmbZahtev.getSelectedItem() == null ||
+            cmbUslovPostavljanja.getSelectedItem() == null || cmbUslovZastite.getSelectedItem() == null ||
+            cmbPrikljucak.getSelectedItem() == null) {
+            throw new Exception("Molimo vas da odaberete sve potrebne vrednosti iz padajućih menija.");
+        }
+
+ 
+        String imePrezime = (String) cmbDirektor.getSelectedItem();
+        String[] delovi = imePrezime.trim().split("\\s+"); 
+
+        if (delovi.length < 2) {
+            throw new Exception("Neispravan format imena i prezimena direktora.");
+        }
+
+        String ime = delovi[0];  
+        String prezime = delovi[delovi.length - 1];
+
+
+        List<Direktor> pronadjeniDirektori = Controller.getInstance().searchDirektori("ime='" + ime + "' AND prezime='" + prezime + "'");
+
+        if (pronadjeniDirektori.isEmpty()) {
+            throw new Exception("Direktor sa imenom " + ime + " i prezimenom " + prezime + " nije pronađen.");
+        }
+
+        int direktorID = pronadjeniDirektori.get(0).getId_direktora();
+
+ 
+        Object selectedItem = cmbZahtev.getSelectedItem();
+        Date selectedDate = null;
+
+        if (selectedItem instanceof String) {
+            String rawDate = (String) selectedItem;
+            SimpleDateFormat inputFormatt = new SimpleDateFormat("yyyy-MM-dd");
+            try {
+                selectedDate = inputFormatt.parse(rawDate);
+            } catch (ParseException e) {
+                throw new Exception("Neispravan format datuma. Očekivani format je yyyy-MM-dd.");
+            }
+        } else if (selectedItem instanceof Date) {
+            selectedDate = (Date) selectedItem;
+        } else {
+            throw new Exception("Neispravan tip podataka u ComboBox-u za datum.");
+        }
+
+        if (selectedDate == null) {
+            throw new Exception("Datum zahteva ne može biti null.");
+        }
+
+        SimpleDateFormat dbFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String formattedDate = dbFormat.format(selectedDate);
+        List<Zahtev> pronadjeniZahtevi = Controller.getInstance().searchZahteve("DATUM=TO_DATE('" + formattedDate + "', 'YYYY-MM-DD')");
+
+        if (pronadjeniZahtevi.isEmpty()) {
+            throw new Exception("Zahtev nije pronađen.");
+        }
+
+        int br_zahteva = pronadjeniZahtevi.get(0).getBr_zahteva();
+
+        String idUslovPStr = (String) cmbUslovPostavljanja.getSelectedItem();
+        List<UsloviPostavljanja> pronadjeniUslovPostavljanja = Controller.getInstance().searchUsloviP("NAZIV='" + idUslovPStr + "'");
+
+        if (pronadjeniUslovPostavljanja.isEmpty()) {
+            throw new Exception("Uslov postavljanja nije pronađen.");
+        }
+        int id_uslovp = pronadjeniUslovPostavljanja.get(0).getId_uslovp();
+
+        String idUslovZStr = (String) cmbUslovZastite.getSelectedItem();
+        List<UsloviZastite> pronadjeniUslovZastite = Controller.getInstance().searchUsloviZ("NAZIV='" + idUslovZStr + "'");
+
+        if (pronadjeniUslovZastite.isEmpty()) {
+            throw new Exception("Uslov zaštite nije pronađen.");
+        }
+        int id_uslovz = pronadjeniUslovZastite.get(0).getId_uslovz();
+
+   
+        String idPrikljucakStr = (String) cmbPrikljucak.getSelectedItem();
+        List<Prikljucak> pronadjenPrikljucak = Controller.getInstance().searchPrikljucci("NAZIV='" + idPrikljucakStr + "'");
+
+        if (pronadjenPrikljucak.isEmpty()) {
+            throw new Exception("Priključak nije pronađen.");
+        }
+        int id_prikljucak = pronadjenPrikljucak.get(0).getId_prikljucak();
+        String nazivprikljucka = ""; 
+
+        return new Resenje(resenjeID, datum, broj, direktorID, br_zahteva, id_uslovp, id_uslovz, id_prikljucak, nazivprikljucka);
+    }
+
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -391,7 +515,7 @@ public class PrikljucakForm extends javax.swing.JFrame {
         jLabel16 = new javax.swing.JLabel();
         txtZastitniUredjaj = new javax.swing.JTextField();
         btnSacuvaj3 = new javax.swing.JButton();
-        txtDatumIzdavanja = new javax.swing.JTextField();
+        txtDatum = new javax.swing.JTextField();
         cmbDirektor = new javax.swing.JComboBox<>();
         jLabel17 = new javax.swing.JLabel();
         jLabel18 = new javax.swing.JLabel();
@@ -527,7 +651,7 @@ public class PrikljucakForm extends javax.swing.JFrame {
             }
         });
 
-        txtDatumIzdavanja.setText("dd-MM-yyyy");
+        txtDatum.setText("dd-MM-yyyy");
 
         cmbDirektor.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         cmbDirektor.addActionListener(new java.awt.event.ActionListener() {
@@ -611,7 +735,7 @@ public class PrikljucakForm extends javax.swing.JFrame {
                                             .addComponent(cmbDirektor, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                             .addComponent(txtBrResenja, javax.swing.GroupLayout.DEFAULT_SIZE, 128, Short.MAX_VALUE)
                                             .addComponent(txtIDResenja)
-                                            .addComponent(txtDatumIzdavanja)))
+                                            .addComponent(txtDatum)))
                                     .addGroup(layout.createSequentialGroup()
                                         .addGap(308, 308, 308)
                                         .addComponent(jLabel1))
@@ -718,7 +842,7 @@ public class PrikljucakForm extends javax.swing.JFrame {
                                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                         .addComponent(jLabel18)
                                         .addComponent(cmbUslovPostavljanja, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addComponent(txtDatumIzdavanja, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(txtDatum, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGap(18, 18, 18)
                                 .addComponent(cmbUslovZastite, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
@@ -756,17 +880,26 @@ public class PrikljucakForm extends javax.swing.JFrame {
     }//GEN-LAST:event_btnSacuvajPrikljucakActionPerformed
 
     private void btnIzmeniActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIzmeniActionPerformed
-        
+          try {
+
+        Resenje r = preuzmiPodatkeZaResenje(); 
+
+        Controller.getInstance().updateResenje(r);
+        popuniTabeluResenjima(r.getId_prikljucka());
+
+    } catch (Exception ex) {
+        java.util.logging.Logger.getLogger(GradForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        JOptionPane.showMessageDialog(null, "Došlo je do greške: " + ex.getMessage(), "Greška", JOptionPane.ERROR_MESSAGE);
+    }
     }//GEN-LAST:event_btnIzmeniActionPerformed
 
     private void btnObrisiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnObrisiActionPerformed
        try {
-            //Resenje r = jeIzabranPrikljucak();
+            Resenje r = jeIzabranoResenje();
 
-            //Controller.getInstance().deleteResenje(r);
+            Controller.getInstance().deleteResenje(r);
+            popuniTabeluResenjima(r.getId_prikljucka());
 
-            //int idResenja = Integer.parseInt(cmbGradovi.getSelectedItem().toString());
-            //popuniTabeluUlicama(postanskiBr);
         } catch (Exception ex) {
             java.util.logging.Logger.getLogger(GradForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
             JOptionPane.showMessageDialog(null, "Došlo je do greške: " + ex.getMessage(), "Greška", JOptionPane.ERROR_MESSAGE);
@@ -787,7 +920,16 @@ public class PrikljucakForm extends javax.swing.JFrame {
     }//GEN-LAST:event_btnIzmeniPrikljucakActionPerformed
 
     private void btnSacuvaj3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSacuvaj3ActionPerformed
-        // TODO add your handling code here:
+         try {
+            Resenje resenje = preuzmiPodatkeZaResenje();
+
+            controller.Controller.getInstance().insertResenje(resenje);
+            popuniTabeluResenjima(resenje.getId_prikljucka());
+            
+        } catch (Exception ex) {
+            Logger.getLogger(PrikljucakForm.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(null, "Došlo je do greške: " + ex.getMessage(), "Greška", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_btnSacuvaj3ActionPerformed
 
     private void cmbDirektorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbDirektorActionPerformed
@@ -866,7 +1008,7 @@ public class PrikljucakForm extends javax.swing.JFrame {
     private javax.swing.JTable tblPrikljucak;
     private javax.swing.JTable tblResenje;
     private javax.swing.JTextField txtBrResenja;
-    private javax.swing.JTextField txtDatumIzdavanja;
+    private javax.swing.JTextField txtDatum;
     private javax.swing.JTextField txtIDResenja;
     private javax.swing.JTextField txtMerniUredjaj;
     private javax.swing.JTextField txtMestoPrikljucenja;

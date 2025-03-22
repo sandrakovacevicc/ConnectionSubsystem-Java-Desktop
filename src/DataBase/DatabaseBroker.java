@@ -219,5 +219,17 @@ public class DatabaseBroker {
     return null;
     }
     
+     public List<DomainObject> getPartition(DomainObject object, String part) throws SQLException {
+        try {
+            Statement statement = connection.createStatement();
+            String query = "SELECT * FROM ZAHTEV " + part;
+            ResultSet rs = statement.executeQuery(query);
+
+            return object.getObjectsFromResultSet(rs);
+        } catch (SQLException ex) {
+            throw ex;
+        }
+    }
+    
     
 }

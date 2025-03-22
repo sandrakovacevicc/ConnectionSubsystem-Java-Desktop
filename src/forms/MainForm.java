@@ -39,6 +39,7 @@ public class MainForm extends javax.swing.JFrame {
         frmObjekat = new javax.swing.JMenuItem();
         frmZaposleni = new javax.swing.JMenuItem();
         frmGrad = new javax.swing.JMenuItem();
+        frmZahtev = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -78,6 +79,14 @@ public class MainForm extends javax.swing.JFrame {
             }
         });
         jMenu1.add(frmGrad);
+
+        frmZahtev.setText("Zahtev");
+        frmZahtev.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                frmZahtevActionPerformed(evt);
+            }
+        });
+        jMenu1.add(frmZahtev);
 
         jMenuBar1.add(jMenu1);
         jMenu1.getAccessibleContext().setAccessibleName("File");
@@ -125,6 +134,15 @@ try {
         }
     }//GEN-LAST:event_frmPrikljucakActionPerformed
 
+    private void frmZahtevActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_frmZahtevActionPerformed
+         try {
+            ZahtevForm frmZahtev = new ZahtevForm();
+            frmZahtev.setVisible(true);
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, "Došlo je do greške: " + ex.getMessage(), "Greška", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_frmZahtevActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -165,6 +183,7 @@ try {
     private javax.swing.JMenuItem frmMolbaZaUrbanizam;
     private javax.swing.JMenuItem frmObjekat;
     private javax.swing.JMenuItem frmPrikljucak;
+    private javax.swing.JMenuItem frmZahtev;
     private javax.swing.JMenuItem frmZaposleni;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuBar jMenuBar1;

@@ -97,7 +97,7 @@ public class KatastarskaOpstina extends DomainObject{
 
     @Override
     public String getOrderByColumn() {
-        return "NAZIV";
+        return "ID_OPSTINE";
     }
     
 }

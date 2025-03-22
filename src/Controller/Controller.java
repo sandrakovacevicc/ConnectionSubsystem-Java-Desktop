@@ -4,12 +4,14 @@ import DataBase.DatabaseBroker;
 import Domain.Object.entities.Direktor;
 import Domain.Object.entities.Grad;
 import Domain.Object.entities.KatastarskaOpstina;
+import Domain.Object.entities.Objekat;
 import Domain.Object.entities.Prikljucak;
 import Domain.Object.entities.Resenje;
 import Domain.Object.entities.Ulica;
 import Domain.Object.entities.UsloviPostavljanja;
 import Domain.Object.entities.UsloviZastite;
 import Domain.Object.entities.Zahtev;
+import Domain.Object.entities.ZaposleniPogled;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -574,8 +576,130 @@ public class Controller {
             }
         }
     }
+          
+        public List<ZaposleniPogled> loadSveZaposlene() throws Exception {
+        List<ZaposleniPogled> zaposleni = new LinkedList<ZaposleniPogled>();
+        try {
+            db.connect();
+            zaposleni = (List<ZaposleniPogled>) (Object) db.getAll(new ZaposleniPogled());
+        } catch (Exception ex) {
+            throw ex;
+        } finally {
+            try {
+                db.disconnect();
+            } catch (Exception ex) {
+                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return zaposleni;
+    }
+        
+        public List<Objekat> loadSveObjekte() throws Exception {
+        List<Objekat> objekti = new LinkedList<Objekat>();
+        try {
+            db.connect();
+            objekti = (List<Objekat>) (Object) db.getAll(new Objekat());
+        } catch (Exception ex) {
+            throw ex;
+        } finally {
+            try {
+                db.disconnect();
+            } catch (Exception ex) {
+                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return objekti;
+    }
+        
+        public List<ZaposleniPogled> searchZaposleni(String whereClause) throws Exception {
+        List<ZaposleniPogled> zaposleni = new LinkedList<>();        
+        try {
+            db.connect();
+            zaposleni = (List<ZaposleniPogled>) (Object) db.getAllWithWhere(new ZaposleniPogled(), whereClause);
+        } catch (Exception ex) {
+            throw ex;
+        } finally {
+            try {
+                db.disconnect();
+            } catch (Exception ex) {
+                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return zaposleni;
+    }
+        
+        public List<Objekat> searchObjekti(String whereClause) throws Exception {
+        List<Objekat> objekti = new LinkedList<>();        
+        try {
+            db.connect();
+            objekti = (List<Objekat>) (Object) db.getAllWithWhere(new Objekat(), whereClause);
+        } catch (Exception ex) {
+            throw ex;
+        } finally {
+            try {
+                db.disconnect();
+            } catch (Exception ex) {
+                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return objekti;
+    }
 
+        public List<Zahtev> getParticijeZahtevi(String string) throws Exception {
+        List<Zahtev> z = new LinkedList<Zahtev>();
+        try {
+            db.connect();
+            z = (List<Zahtev>) (Object) db.getPartition(new Zahtev(), string);
+        } catch (Exception ex) {
+            throw ex;
+        } finally {
+            try {
+                db.disconnect();
+            } catch (Exception ex) {
+                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return z;
+    }
+        
+         public void insertZahtev(Zahtev z) throws Exception {
+        try {
+            db.connect();
+            db.insert(z);
+            JOptionPane.showMessageDialog(null, "Uspesno ste uneli");
+
+        } catch (Exception ex) {
+            throw ex;
+        } finally {
+            try {
+                db.disconnect();
+            } catch (Exception ex) {
+                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
     
+          public void updateZahtev(Zahtev z) throws Exception {
+        try {
+            db.connect();
+            int answer = JOptionPane.showConfirmDialog(null, "Zelite li da izmenite zahtev?", "Izmena", JOptionPane.YES_NO_OPTION);
+            if (answer == 1) {
+                return;
+            }
+            db.update(z);
+            JOptionPane.showMessageDialog(null, "Uspesno ste izmenili");
+
+        } catch (Exception ex) {
+            throw ex;
+        } finally {
+            try {
+                db.disconnect();
+            } catch (Exception ex) {
+                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+
 
 
 }

@@ -100,7 +100,7 @@ public class Grad extends DomainObject{
 
     @Override
     public String getOrderByColumn() {
-        return "NAZIV"; // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        return "POSTANSKI_BR";
     }
     
 }

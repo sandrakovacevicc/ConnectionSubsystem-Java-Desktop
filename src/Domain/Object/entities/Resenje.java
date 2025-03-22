@@ -208,7 +208,7 @@ public String getUpdateClause() {
 
     @Override
     public String getOrderByColumn() {
-        return "DATUM";
+        return "ID_RESENJA";
     }
     
 }

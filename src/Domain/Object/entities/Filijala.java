@@ -100,4 +100,9 @@ public class Filijala extends DomainObject{
         return "ID_FILIJALE"; 
     }
     
+     @Override
+    public String toString() {
+        return naziv; 
+    }
+    
 }

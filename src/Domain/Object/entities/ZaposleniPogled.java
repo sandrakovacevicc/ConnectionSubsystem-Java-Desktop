@@ -114,7 +114,7 @@ public class ZaposleniPogled extends DomainObject {
 
     @Override
     public String getColumnValues() {
-        return String.format("%d, %s, %s, %s, %d, %d, %d",
+        return String.format("%d, '%s', '%s', '%s', %d, %d, %d",
                 id_zaposlenog,
                 ime,
                 prezime,
@@ -126,7 +126,7 @@ public class ZaposleniPogled extends DomainObject {
 
     @Override
     public String getUpdateClause() {
-         return String.format("ID_ZAPOSLENOG = %d, IME = %s, PREZIME = %s, KONTAKT = '%s', POSTANSKI_BR = %d, ID_ULICE = %d, ID_FILIJALE = %d",
+         return String.format("ID_ZAPOSLENOG = %d, IME = '%s', PREZIME = '%s', KONTAKT = '%s', POSTANSKI_BR = %d, ID_ULICE = %d, ID_FILIJALE = %d",
                 id_zaposlenog,
                 ime,
                 prezime,

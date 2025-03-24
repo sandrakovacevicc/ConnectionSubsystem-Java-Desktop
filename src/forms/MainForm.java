@@ -112,7 +112,12 @@ public class MainForm extends javax.swing.JFrame {
     }//GEN-LAST:event_frmPrikljucakMouseClicked
 
     private void frmZaposleniActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_frmZaposleniActionPerformed
-        // TODO add your handling code here:
+        try {
+            ZaposleniForm frmZaposleni = new ZaposleniForm();
+            frmZaposleni.setVisible(true);
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, "Došlo je do greške: " + ex.getMessage(), "Greška", JOptionPane.ERROR_MESSAGE);
+        } 
     }//GEN-LAST:event_frmZaposleniActionPerformed
 
     private void frmGradActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_frmGradActionPerformed

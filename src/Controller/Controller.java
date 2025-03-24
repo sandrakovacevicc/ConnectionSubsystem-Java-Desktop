@@ -2,6 +2,7 @@ package controller;
 
 import DataBase.DatabaseBroker;
 import Domain.Object.entities.Direktor;
+import Domain.Object.entities.Filijala;
 import Domain.Object.entities.Grad;
 import Domain.Object.entities.KatastarskaOpstina;
 import Domain.Object.entities.Objekat;
@@ -11,6 +12,7 @@ import Domain.Object.entities.Ulica;
 import Domain.Object.entities.UsloviPostavljanja;
 import Domain.Object.entities.UsloviZastite;
 import Domain.Object.entities.Zahtev;
+import Domain.Object.entities.ZaposleniOsnovno;
 import Domain.Object.entities.ZaposleniPogled;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -699,7 +701,116 @@ public class Controller {
             }
         }
     }
+          
+        public List<Filijala> loadSveFilijale() throws Exception {
+        List<Filijala> filijale = new LinkedList<Filijala>();
+        try {
+            db.connect();
+            filijale = (List<Filijala>) (Object) db.getAll(new Filijala());
+        } catch (Exception ex) {
+            throw ex;
+        } finally {
+            try {
+                db.disconnect();
+            } catch (Exception ex) {
+                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return filijale;
+    }
+        
+        
+         public List<Filijala> searchFilijale(String whereClause) throws Exception {
+        List<Filijala> filijale = new LinkedList<>();        
+        try {
+            db.connect();
+            filijale = (List<Filijala>) (Object) db.getAllWithWhere(new Filijala(), whereClause);
+        } catch (Exception ex) {
+            throw ex;
+        } finally {
+            try {
+                db.disconnect();
+            } catch (Exception ex) {
+                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return filijale;
+    }
+        
+         public List<ZaposleniOsnovno> loadSveZaposleneOSnovno() throws Exception {
+        List<ZaposleniOsnovno> zaposleni = new LinkedList<ZaposleniOsnovno>();
+        try {
+            db.connect();
+            zaposleni = (List<ZaposleniOsnovno>) (Object) db.getAll(new ZaposleniOsnovno());
+        } catch (Exception ex) {
+            throw ex;
+        } finally {
+            try {
+                db.disconnect();
+            } catch (Exception ex) {
+                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return zaposleni;
+    }
 
+       public void insertZaposleniPogled(ZaposleniPogled zp) throws Exception {
+        try {
+            db.connect();
+            db.insert(zp);
+            JOptionPane.showMessageDialog(null, "Uspesno ste uneli");
+
+        } catch (Exception ex) {
+            throw ex;
+        } finally {
+            try {
+                db.disconnect();
+            } catch (Exception ex) {
+                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+       
+       public void deleteZaposleniPogled(ZaposleniPogled zp) throws Exception {
+        try {
+            db.connect();
+            int answer = JOptionPane.showConfirmDialog(null, "Zaista zelite da obrisete zaposlenog?", "Brisanje", JOptionPane.YES_NO_OPTION);
+            if (answer == 1) {
+                return;
+            }
+            db.delete(zp);
+
+        } catch (Exception ex) {
+            throw ex;
+        } finally {
+            try {
+                db.disconnect();
+            } catch (Exception ex) {
+                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+       
+        public void updateZaposleni(ZaposleniPogled zp) throws Exception {
+        try {
+            db.connect();
+            int answer = JOptionPane.showConfirmDialog(null, "Zelite li da izmenite zaposlenog?", "Izmena", JOptionPane.YES_NO_OPTION);
+            if (answer == 1) {
+                return;
+            }
+            db.update(zp);
+            JOptionPane.showMessageDialog(null, "Uspesno ste izmenili");
+
+        } catch (Exception ex) {
+            throw ex;
+        } finally {
+            try {
+                db.disconnect();
+            } catch (Exception ex) {
+                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
 
 
 }

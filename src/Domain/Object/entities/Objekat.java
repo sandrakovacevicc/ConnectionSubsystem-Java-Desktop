@@ -28,9 +28,9 @@ public class Objekat extends DomainObject {
     private int id_vrste_prikljucka;
     private int id_instalacije;
     private String vrsta_objekta;
-    private int ukupna_snaga;
+    private float ukupna_snaga;
 
-    public Objekat(int id_objekta, String katastarska_pacrela, int postanski_br, int id_ulice, int id_nacin_grejanja, int id_namene_objekta, int id_vrste_prikljucka, int id_instalacije, String vrsta_objekta, int ukupna_snaga) {
+    public Objekat(int id_objekta, String katastarska_pacrela, int postanski_br, int id_ulice, int id_nacin_grejanja, int id_namene_objekta, int id_vrste_prikljucka, int id_instalacije, String vrsta_objekta, float ukupna_snaga) {
         this.id_objekta = id_objekta;
         this.katastarska_pacrela = katastarska_pacrela;
         this.postanski_br = postanski_br;
@@ -118,11 +118,11 @@ public class Objekat extends DomainObject {
         this.vrsta_objekta = vrsta_objekta;
     }
 
-    public int getUkupna_snaga() {
+    public float getUkupna_snaga() {
         return ukupna_snaga;
     }
 
-    public void setUkupna_snaga(int ukupna_snaga) {
+    public void setUkupna_snaga(float ukupna_snaga) {
         this.ukupna_snaga = ukupna_snaga;
     }
     
@@ -144,7 +144,7 @@ public class Objekat extends DomainObject {
 
     @Override
     public String getColumnValues() {
-        return String.format("%d, %s, %d, %d, %d, %d, %d, %d,'%s', ukupna_snaga(%d)",
+        return String.format("%d, %s, %d, %d, %d, %d, %d, %d,'%s', ukupna_snaga(%.2f,)",
                 id_objekta,
                 katastarska_pacrela,
                 postanski_br,
@@ -158,8 +158,9 @@ public class Objekat extends DomainObject {
 
     @Override
     public String getUpdateClause() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
+    return String.format("ID_OBJEKTA = %d, UKUPNA_SNAGA = %.2f",
+                id_objekta,
+                ukupna_snaga);    }
 
     @Override
     public String getWhereIdClause() {
@@ -189,12 +190,12 @@ public List<DomainObject> getObjectsFromResultSet(ResultSet rs) throws SQLExcept
         int id_vrste_prikljucka = rs.getInt("ID_VRSTE_PRIKLJUCKA");
         int id_instalacije = rs.getInt("ID_INSTALACIJE");
         String vrsta_objekta = rs.getString("VRSTA_OBJEKTA");
-        BigDecimal usBigDecimal = rs.getBigDecimal("UKUPNA_SNAGA");
-        int us = (usBigDecimal != null) ? usBigDecimal.intValue() : 0;
+        float ukupna_snaga = rs.getFloat("UKUPNA_SNAGA");
+       
 
         objekti.add(new Objekat(id_objekta, katastarska_parcela, postanski_br, id_ulice, 
                                 id_nacin_grejanja, id_namene_objekta, id_vrste_prikljucka, 
-                                id_instalacije, vrsta_objekta, us));
+                                id_instalacije, vrsta_objekta, ukupna_snaga));
     }
     return objekti;
 }

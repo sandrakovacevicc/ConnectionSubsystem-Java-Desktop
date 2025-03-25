@@ -35,7 +35,6 @@ public class MainForm extends javax.swing.JFrame {
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         frmPrikljucak = new javax.swing.JMenuItem();
-        frmMolbaZaUrbanizam = new javax.swing.JMenuItem();
         frmObjekat = new javax.swing.JMenuItem();
         frmZaposleni = new javax.swing.JMenuItem();
         frmGrad = new javax.swing.JMenuItem();
@@ -58,10 +57,12 @@ public class MainForm extends javax.swing.JFrame {
         });
         jMenu1.add(frmPrikljucak);
 
-        frmMolbaZaUrbanizam.setText("Molba za Urbanizam");
-        jMenu1.add(frmMolbaZaUrbanizam);
-
         frmObjekat.setText("Objekat");
+        frmObjekat.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                frmObjekatActionPerformed(evt);
+            }
+        });
         jMenu1.add(frmObjekat);
 
         frmZaposleni.setText("Zaposleni");
@@ -148,6 +149,15 @@ try {
         }
     }//GEN-LAST:event_frmZahtevActionPerformed
 
+    private void frmObjekatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_frmObjekatActionPerformed
+        try {
+            ObjekatForm frmObjekat = new ObjekatForm();
+            frmObjekat.setVisible(true);
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, "Došlo je do greške: " + ex.getMessage(), "Greška", JOptionPane.ERROR_MESSAGE);
+        } 
+    }//GEN-LAST:event_frmObjekatActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -185,7 +195,6 @@ try {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem frmGrad;
-    private javax.swing.JMenuItem frmMolbaZaUrbanizam;
     private javax.swing.JMenuItem frmObjekat;
     private javax.swing.JMenuItem frmPrikljucak;
     private javax.swing.JMenuItem frmZahtev;

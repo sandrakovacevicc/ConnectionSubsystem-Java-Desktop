@@ -7,6 +7,7 @@ package Domain.Object.entities;
 import Domain.Object.DomainObject;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -84,12 +85,19 @@ public class NacinGrejanja extends DomainObject{
 
     @Override
     public List<DomainObject> getObjectsFromResultSet(ResultSet rs) throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
+    List<DomainObject> grejanja = new ArrayList<>();
+        
+        while(rs.next()) {
+            int id_nacin_grejanja = rs.getInt("ID_NACIN_GREJANJA"); 
+            String naziv = rs.getString("NAZIV");
+            
+            grejanja.add(new NacinGrejanja(id_nacin_grejanja, naziv));
+        }
+        return grejanja;    }
 
     @Override
     public String getOrderByColumn() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        return "ID_NACIN_GREJANJA";
     }
     
 }

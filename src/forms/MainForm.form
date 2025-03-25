@@ -21,15 +21,13 @@
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="frmPrikljucakActionPerformed"/>
               </Events>
             </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="frmMolbaZaUrbanizam">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Molba za Urbanizam"/>
-              </Properties>
-            </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="frmObjekat">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Objekat"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="frmObjekatActionPerformed"/>
+              </Events>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="frmZaposleni">
               <Properties>

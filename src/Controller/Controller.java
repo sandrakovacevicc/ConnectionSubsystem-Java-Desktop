@@ -5,12 +5,16 @@ import Domain.Object.entities.Direktor;
 import Domain.Object.entities.Filijala;
 import Domain.Object.entities.Grad;
 import Domain.Object.entities.KatastarskaOpstina;
+import Domain.Object.entities.NacinGrejanja;
+import Domain.Object.entities.NamenaObjekta;
 import Domain.Object.entities.Objekat;
 import Domain.Object.entities.Prikljucak;
 import Domain.Object.entities.Resenje;
+import Domain.Object.entities.TipInstalacije;
 import Domain.Object.entities.Ulica;
 import Domain.Object.entities.UsloviPostavljanja;
 import Domain.Object.entities.UsloviZastite;
+import Domain.Object.entities.VrstaPrikljucka;
 import Domain.Object.entities.Zahtev;
 import Domain.Object.entities.ZaposleniOsnovno;
 import Domain.Object.entities.ZaposleniPogled;
@@ -810,6 +814,74 @@ public class Controller {
                 Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+    }
+
+    public List<NacinGrejanja> loadSvaGrejanja() throws Exception {
+        List<NacinGrejanja> grejanje = new LinkedList<>();
+        try {
+            db.connect();
+            grejanje = (List<NacinGrejanja>) (Object) db.getAll(new NacinGrejanja());
+        } catch (Exception ex) {
+            throw ex;
+        } finally {
+            try {
+                db.disconnect();
+            } catch (Exception ex) {
+                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return grejanje;
+    }
+    
+
+    public List<VrstaPrikljucka> loadSveVrstePrikljucaka() throws Exception{
+    List<VrstaPrikljucka> vrstaprikljucka = new LinkedList<>();
+        try {
+            db.connect();
+            vrstaprikljucka = (List<VrstaPrikljucka>) (Object) db.getAll(new VrstaPrikljucka());
+        } catch (Exception ex) {
+            throw ex;
+        } finally {
+            try {
+                db.disconnect();
+            } catch (Exception ex) {
+                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return vrstaprikljucka;    }
+
+    public List<TipInstalacije> loadSveInstalacije() throws Exception {
+        List<TipInstalacije> instalacija = new LinkedList<>();
+        try {
+            db.connect();
+            instalacija = (List<TipInstalacije>) (Object) db.getAll(new TipInstalacije());
+        } catch (Exception ex) {
+            throw ex;
+        } finally {
+            try {
+                db.disconnect();
+            } catch (Exception ex) {
+                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return instalacija;   
+    }
+
+    public List<NamenaObjekta> loadSveNameneObjekta() throws Exception {
+        List<NamenaObjekta> namene = new LinkedList<>();
+        try {
+            db.connect();
+            namene = (List<NamenaObjekta>) (Object) db.getAll(new NamenaObjekta());
+        } catch (Exception ex) {
+            throw ex;
+        } finally {
+            try {
+                db.disconnect();
+            } catch (Exception ex) {
+                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return namene;   
     }
 
 

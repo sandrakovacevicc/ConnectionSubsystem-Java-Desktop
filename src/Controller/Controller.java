@@ -5,6 +5,7 @@ import Domain.Object.entities.Direktor;
 import Domain.Object.entities.Filijala;
 import Domain.Object.entities.Grad;
 import Domain.Object.entities.KatastarskaOpstina;
+import Domain.Object.entities.MolbaZaUrbanizam;
 import Domain.Object.entities.NacinGrejanja;
 import Domain.Object.entities.NamenaObjekta;
 import Domain.Object.entities.Objekat;
@@ -885,4 +886,89 @@ public class Controller {
     }
 
 
+     public List<MolbaZaUrbanizam> searchMolbe(String whereClause) throws Exception {
+        List<MolbaZaUrbanizam> molbe = new LinkedList<>();        
+        try {
+            db.connect();
+            molbe = (List<MolbaZaUrbanizam>) (Object) db.getAllWithWhere(new MolbaZaUrbanizam(), whereClause);
+        } catch (Exception ex) {
+            throw ex;
+        } finally {
+            try {
+                db.disconnect();
+            } catch (Exception ex) {
+                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return molbe;
+    }
+     
+         public List<NamenaObjekta> searchNamenaObjekta(String whereClause) throws Exception {
+        List<NamenaObjekta> namene = new LinkedList<>();        
+        try {
+            db.connect();
+            namene = (List<NamenaObjekta>) (Object) db.getAllWithWhere(new NamenaObjekta(), whereClause);
+        } catch (Exception ex) {
+            throw ex;
+        } finally {
+            try {
+                db.disconnect();
+            } catch (Exception ex) {
+                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return namene;
+    }
+         
+          public List<NacinGrejanja> searchGrejanja(String whereClause) throws Exception {
+        List<NacinGrejanja> grejanje = new LinkedList<>();        
+        try {
+            db.connect();
+            grejanje = (List<NacinGrejanja>) (Object) db.getAllWithWhere(new NacinGrejanja(), whereClause);
+        } catch (Exception ex) {
+            throw ex;
+        } finally {
+            try {
+                db.disconnect();
+            } catch (Exception ex) {
+                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return grejanje;
+    }
+          
+        public List<TipInstalacije> searchInstalacije(String whereClause) throws Exception {
+        List<TipInstalacije> instalacije = new LinkedList<>();        
+        try {
+            db.connect();
+            instalacije = (List<TipInstalacije>) (Object) db.getAllWithWhere(new TipInstalacije(), whereClause);
+        } catch (Exception ex) {
+            throw ex;
+        } finally {
+            try {
+                db.disconnect();
+            } catch (Exception ex) {
+                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return instalacije;
+    }
+              
+        public List<VrstaPrikljucka> searchVrstaPrikljucka(String whereClause) throws Exception {
+        List<VrstaPrikljucka> vrstaprikljucka = new LinkedList<>();        
+        try {
+            db.connect();
+            vrstaprikljucka = (List<VrstaPrikljucka>) (Object) db.getAllWithWhere(new VrstaPrikljucka(), whereClause);
+        } catch (Exception ex) {
+            throw ex;
+        } finally {
+            try {
+                db.disconnect();
+            } catch (Exception ex) {
+                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return vrstaprikljucka;
+    }
+        
 }

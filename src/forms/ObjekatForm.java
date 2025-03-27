@@ -116,6 +116,10 @@ public class ObjekatForm extends javax.swing.JFrame {
         cmbInstalacija = new javax.swing.JComboBox<>();
         cmbNamenaObjekta = new javax.swing.JComboBox<>();
         cmbVrstaObjekta = new javax.swing.JComboBox<>();
+        cmbPostanskiBrObjekat = new javax.swing.JComboBox<>();
+        jLabel22 = new javax.swing.JLabel();
+        cmbUlicaObjekat = new javax.swing.JComboBox<>();
+        jLabel23 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -277,6 +281,16 @@ public class ObjekatForm extends javax.swing.JFrame {
 
         cmbVrstaObjekta.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Bazna stanica mobilne telefonije", "Industrijski objekat", "Poslovni prostor", "Stambeni objekat" }));
 
+        cmbPostanskiBrObjekat.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "1", "2", "2" }));
+        cmbPostanskiBrObjekat.setSelectedIndex(-1);
+
+        jLabel22.setText("Ulica");
+
+        cmbUlicaObjekat.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "1", "2", "2" }));
+        cmbUlicaObjekat.setSelectedIndex(-1);
+
+        jLabel23.setText("Postanski broj");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -338,7 +352,7 @@ public class ObjekatForm extends javax.swing.JFrame {
                                     .addComponent(jLabel6)
                                     .addComponent(jLabel2)
                                     .addComponent(jLabel5))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 27, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 17, Short.MAX_VALUE)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(layout.createSequentialGroup()
                                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -353,14 +367,13 @@ public class ObjekatForm extends javax.swing.JFrame {
                                             .addGroup(layout.createSequentialGroup()
                                                 .addComponent(cmbVrstaPrikljucka, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE)
                                                 .addGap(134, 134, 134))
-                                            .addGroup(layout.createSequentialGroup()
+                                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                                 .addComponent(cmbInstalacija, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE)
                                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                                .addComponent(jLabel14)
-                                                .addGap(18, 18, 18)))
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                            .addComponent(txtUkupnaSnaga)
-                                            .addComponent(cmbVrstaObjekta, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                    .addComponent(jLabel23)
+                                                    .addComponent(jLabel14))
+                                                .addGap(18, 18, 18))))
                                     .addGroup(layout.createSequentialGroup()
                                         .addComponent(cmbNacinGrejanja, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addGap(70, 70, 70)
@@ -370,8 +383,19 @@ public class ObjekatForm extends javax.swing.JFrame {
                                                 .addComponent(jLabel7)
                                                 .addGap(18, 18, 18)
                                                 .addComponent(cmbNamenaObjekta, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                            .addComponent(jLabel8))))))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                            .addComponent(jLabel8))
+                                        .addGap(136, 136, 136)))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                        .addComponent(txtUkupnaSnaga)
+                                        .addComponent(cmbVrstaObjekta, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(cmbPostanskiBrObjekat, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(29, 29, 29)
+                                        .addComponent(jLabel22)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(cmbUlicaObjekat, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(btnIzmeniObjekat)
                             .addComponent(btnObrisiObjekat)
@@ -427,7 +451,11 @@ public class ObjekatForm extends javax.swing.JFrame {
                             .addComponent(jLabel7)
                             .addComponent(cmbNacinGrejanja, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel6)
-                            .addComponent(cmbNamenaObjekta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(cmbNamenaObjekta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel23)
+                            .addComponent(cmbPostanskiBrObjekat, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel22)
+                            .addComponent(cmbUlicaObjekat, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(33, 33, 33)
                         .addComponent(jLabel8)
                         .addGap(18, 18, 18)
@@ -587,11 +615,24 @@ public class ObjekatForm extends javax.swing.JFrame {
             }
         }
     });
+          ucitajPostanskeBrojeveObjekat();
+          
+          cmbUlicaObjekat.setEnabled(false);
+    
+    cmbPostanskiBrObjekat.addActionListener(new ActionListener() {
+        public void actionPerformed(ActionEvent evt) {
+            try {
+                ucitajUliceZaPostanskiBrojObjekat();
+            } catch (Exception ex) {
+                Logger.getLogger(ZaposleniForm.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    });
           
     }
 
   private void ucitajPostanskeBrojeve() throws Exception {
-      cmbUlica.setEnabled(true);
+     cmbUlica.setEnabled(true);
     ulice = Controller.getInstance().loadSveUlice();
     cmbPostanskiBr.removeAllItems();
 
@@ -620,6 +661,37 @@ private void ucitajUliceZaPostanskiBroj() throws Exception {
     }
 }
 
+private void ucitajPostanskeBrojeveObjekat() throws Exception {
+    cmbUlicaObjekat.setEnabled(true);
+    ulice = Controller.getInstance().loadSveUlice();
+    cmbPostanskiBrObjekat.removeAllItems();
+
+    Set<String> jedinstveniPostanskiBr = new HashSet<>();
+    for (Ulica u : ulice) {
+        jedinstveniPostanskiBr.add(String.valueOf(u.getPostanski_br()));
+    }
+    for (String postanskiBr : jedinstveniPostanskiBr) {
+        cmbPostanskiBrObjekat.addItem(postanskiBr);
+    }
+}
+
+private void ucitajUliceZaPostanskiBrojObjekat() throws Exception {
+    String izabraniPostanskiBr = (String) cmbPostanskiBrObjekat.getSelectedItem();
+
+    if (izabraniPostanskiBr != null) {
+
+        List<Ulica> filtriraneUlice = controller.Controller.getInstance().searchUlice("POSTANSKI_BR='" + String.valueOf(izabraniPostanskiBr) + "'");
+
+        cmbUlicaObjekat.removeAllItems();  
+        for (Ulica u : filtriraneUlice) {
+            cmbUlicaObjekat.addItem(u.getNaziv());  
+        }
+
+        cmbUlicaObjekat.setEnabled(!filtriraneUlice.isEmpty());
+    }
+}
+
+
 private void popuniFormuIzabranimObjektom(Objekat o) throws Exception {
         if (o != null) {
             txtObjekatID.setText(String.valueOf(o.getId_objekta()));
@@ -633,7 +705,11 @@ private void popuniFormuIzabranimObjektom(Objekat o) throws Exception {
             pronadjeneInstalacije = Controller.getInstance().searchInstalacije("ID_INSTALACIJE='" + String.valueOf(o.getId_instalacije()) + "'");
             cmbInstalacija.setSelectedItem(pronadjeneInstalacije.get(0).getTip());
             pronadjeneVrstePrikljucka = Controller.getInstance().searchVrstaPrikljucka("ID_VRSTE_PRIKLJUCKA='" + String.valueOf(o.getId_vrste_prikljucka()) + "'");
-            cmbVrstaPrikljucka.setSelectedItem(pronadjeneVrstePrikljucka.get(0).getNaziv());         
+            cmbVrstaPrikljucka.setSelectedItem(pronadjeneVrstePrikljucka.get(0).getNaziv());
+            pronadjeneUlice = Controller.getInstance().searchUlice("POSTANSKI_BR='" + String.valueOf(o.getPostanski_br()) + "' AND ID_ULICE='" + String.valueOf(o.getId_ulice()) + "'");
+            cmbPostanskiBrObjekat.setSelectedItem(String.valueOf(pronadjeneUlice.get(0).getPostanski_br()));
+            cmbUlicaObjekat.setEnabled(true);
+            cmbUlicaObjekat.setSelectedItem(String.valueOf(pronadjeneUlice.get(0).getNaziv()));
         }
     }
 
@@ -750,7 +826,7 @@ private void popuniFormuIzabranimObjektom(Objekat o) throws Exception {
             }
         }
 
-         pronadjeneUlice = Controller.getInstance().searchUlice("POSTANSKI_BR='" + String.valueOf(izabranaMolba.getPostanski_br()) + "' AND ID_ULICE='" + String.valueOf(izabranaMolba.getId_ulice()) + "'");
+            pronadjeneUlice = Controller.getInstance().searchUlice("POSTANSKI_BR='" + String.valueOf(izabranaMolba.getPostanski_br()) + "' AND ID_ULICE='" + String.valueOf(izabranaMolba.getId_ulice()) + "'");
             cmbPostanskiBr.setSelectedItem(String.valueOf(pronadjeneUlice.get(0).getPostanski_br()));
             cmbUlica.setEnabled(true);
             cmbUlica.setSelectedItem(String.valueOf(pronadjeneUlice.get(0).getNaziv()));
@@ -839,7 +915,9 @@ private void popuniFormuIzabranimObjektom(Objekat o) throws Exception {
     private javax.swing.JComboBox<String> cmbNamenaObjekta;
     private javax.swing.JComboBox<String> cmbObjekat;
     private javax.swing.JComboBox<String> cmbPostanskiBr;
+    private javax.swing.JComboBox<String> cmbPostanskiBrObjekat;
     private javax.swing.JComboBox<String> cmbUlica;
+    private javax.swing.JComboBox<String> cmbUlicaObjekat;
     private javax.swing.JComboBox<String> cmbVrstaObjekta;
     private javax.swing.JComboBox<String> cmbVrstaPrikljucka;
     private javax.swing.JLabel jLabel1;
@@ -855,6 +933,8 @@ private void popuniFormuIzabranimObjektom(Objekat o) throws Exception {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel20;
     private javax.swing.JLabel jLabel21;
+    private javax.swing.JLabel jLabel22;
+    private javax.swing.JLabel jLabel23;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;

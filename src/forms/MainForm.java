@@ -39,6 +39,7 @@ public class MainForm extends javax.swing.JFrame {
         frmZaposleni = new javax.swing.JMenuItem();
         frmGrad = new javax.swing.JMenuItem();
         frmZahtev = new javax.swing.JMenuItem();
+        jMenuItem1 = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -88,6 +89,14 @@ public class MainForm extends javax.swing.JFrame {
             }
         });
         jMenu1.add(frmZahtev);
+
+        jMenuItem1.setText("Snaga");
+        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem1ActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jMenuItem1);
 
         jMenuBar1.add(jMenu1);
         jMenu1.getAccessibleContext().setAccessibleName("File");
@@ -158,6 +167,14 @@ try {
         } 
     }//GEN-LAST:event_frmObjekatActionPerformed
 
+    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+        try {
+            SnagaForm frmSnaga = new SnagaForm();
+            frmSnaga.setVisible(true);
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, "Došlo je do greške: " + ex.getMessage(), "Greška", JOptionPane.ERROR_MESSAGE);
+        }     }//GEN-LAST:event_jMenuItem1ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -201,5 +218,6 @@ try {
     private javax.swing.JMenuItem frmZaposleni;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JMenuItem jMenuItem1;
     // End of variables declaration//GEN-END:variables
 }

@@ -11,6 +11,7 @@ import Domain.Object.entities.NamenaObjekta;
 import Domain.Object.entities.Objekat;
 import Domain.Object.entities.Prikljucak;
 import Domain.Object.entities.Resenje;
+import Domain.Object.entities.Snaga;
 import Domain.Object.entities.TipInstalacije;
 import Domain.Object.entities.Ulica;
 import Domain.Object.entities.UsloviPostavljanja;
@@ -969,6 +970,40 @@ public class Controller {
             }
         }
         return vrstaprikljucka;
+    }
+        
+         public List<Snaga> loadSveSnage() throws Exception {
+        List<Snaga> snage = new LinkedList<Snaga>();
+        try {
+            db.connect();
+            snage = (List<Snaga>) (Object) db.getAll(new Snaga());
+        } catch (Exception ex) {
+            throw ex;
+        } finally {
+            try {
+                db.disconnect();
+            } catch (Exception ex) {
+                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return snage;
+    }
+         
+         public List<Snaga> searchSnaga(String whereClause) throws Exception {
+        List<Snaga> snaga = new LinkedList<Snaga>();
+        try {
+            db.connect();
+            snaga = (List<Snaga>) (Object) db.getAllWithWhere(new Snaga(), whereClause);
+        } catch (Exception ex) {
+            throw ex;
+        } finally {
+            try {
+                db.disconnect();
+            } catch (Exception ex) {
+                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return snaga;
     }
         
 }

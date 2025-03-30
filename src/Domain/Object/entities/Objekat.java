@@ -142,25 +142,37 @@ public class Objekat extends DomainObject {
         return "ID_OBJEKTA, KATASTARSKA_PARCELA, POSTANSKI_BR, ID_ULICE, ID_NACIN_GREJANJA, ID_NAMENE_OBJEKTA, ID_VRSTE_PRIKLJUCKA, ID_INSTALACIJE, VRSTA_OBJEKTA, UKUPNA_SNAGA";
     }
 
+   @Override
+public String getColumnValues() {
+    var ukupnaSnagaValue = (ukupna_snaga != 0) 
+        ? String.format("%.2f", ukupna_snaga)  
+        : "NULL";  
+
+    return String.format("%d, '%s', %d, %d, %d, %d, %d, %d, '%s', %s",
+            id_objekta,
+            katastarska_pacrela,
+            postanski_br,
+            id_ulice,
+            id_nacin_grejanja,
+            id_namene_objekta,
+            id_vrste_prikljucka,
+            id_instalacije,
+            vrsta_objekta,
+            ukupnaSnagaValue);
+}
+
+
     @Override
-    public String getColumnValues() {
-        return String.format("%d, %s, %d, %d, %d, %d, %d, %d,'%s', ukupna_snaga(%.2f,)",
-                id_objekta,
+    public String getUpdateClause() {
+     return String.format("KATASTARSKA_PARCELA = '%s', POSTANSKI_BR = %d, ID_ULICE = %d,ID_NACIN_GREJANJA = %d,ID_NAMENE_OBJEKTA = %d, ID_VRSTE_PRIKLJUCKA = %d, ID_INSTALACIJE = %d, VRSTA_OBJEKTA = '%s'",
                 katastarska_pacrela,
                 postanski_br,
                 id_ulice,
                 id_nacin_grejanja,
-                id_namene_objekta,
-                id_vrste_prikljucka,
-                id_instalacije,
-                vrsta_objekta,
-                ukupna_snaga);    }
-
-    @Override
-    public String getUpdateClause() {
-    return String.format("ID_OBJEKTA = %d, UKUPNA_SNAGA = %.2f",
-                id_objekta,
-                ukupna_snaga);    }
+            id_namene_objekta,
+            id_vrste_prikljucka,
+            id_instalacije,
+            vrsta_objekta);}
 
     @Override
     public String getWhereIdClause() {
@@ -173,7 +185,7 @@ public class Objekat extends DomainObject {
 
     @Override
     public String getDeleteWhereClause() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        return String.format("ID_OBJEKTA = %d", this.getId_objekta());    
     }
 
    @Override

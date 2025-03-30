@@ -16,6 +16,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -41,6 +42,7 @@ public class SnagaForm extends javax.swing.JFrame {
         setTitle("Snaga");
         setLocationRelativeTo(this);
         ucitajPodatkeUFormu();
+        ucitajObjekte();
         setUpTableListenerSnaga();
         setUpTableListenerObjekat();
     }
@@ -152,7 +154,7 @@ public class SnagaForm extends javax.swing.JFrame {
                 java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.Object.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, true, true
+                false, true, true, true
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -260,16 +262,24 @@ public class SnagaForm extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-     private void sacuvajOriginalneVrednosti(JTable table) {
-        DefaultTableModel model = (DefaultTableModel) tblObjekat.getModel();
+   private void sacuvajOriginalneVrednosti(JTable table) {
+    DefaultTableModel model = (DefaultTableModel) table.getModel();
+    originalneVrednosti.clear(); 
 
-        for (int i = 0; i < model.getRowCount(); i++) {
-            String vrsta_objekta = model.getValueAt(i, 2).toString();
-            String ukupna_snaga = model.getValueAt(i, 3).toString();
+    for (int i = 0; i < model.getRowCount(); i++) {
+        int id_objekta = Integer.parseInt(model.getValueAt(i, 0).toString());
+        String katastarska_parcela = model.getValueAt(i, 1) != null ? model.getValueAt(i, 1).toString() : "0";
+        String vrsta_objekta = model.getValueAt(i, 2) != null ? model.getValueAt(i, 2).toString() : "";
+        String ukupna_snaga = model.getValueAt(i, 3) != null ? model.getValueAt(i, 3).toString() : "0";
 
-            originalneVrednosti.put(i, new String[]{vrsta_objekta,ukupna_snaga });
-        }
+        originalneVrednosti.put(id_objekta, new String[]{katastarska_parcela, vrsta_objekta, ukupna_snaga});
+
     }
+}
+
+
+
+
     
     private void reloadGridSnaga() {
         tblSnaga = new javax.swing.JTable();
@@ -311,7 +321,7 @@ public class SnagaForm extends javax.swing.JFrame {
                 java.lang.Integer.class, java.lang.Integer.class, java.lang.String.class,java.lang.Float.class
             };
             boolean[] canEdit = new boolean[]{
-                false, false, false, false
+                false, true, true, true
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -325,9 +335,25 @@ public class SnagaForm extends javax.swing.JFrame {
         setUpTableListenerObjekat();
     }
      private void ucitajPodatkeUFormu() throws Exception {
+         
+        snaga = Controller.getInstance().loadSveSnage();
+        DefaultTableModel modelSnage = (DefaultTableModel) tblSnaga.getModel();
+        
+         modelSnage.setRowCount(0); 
+
+        for (Snaga s : snaga) {
+            modelSnage.addRow(new Object[]{s.getId_snage(), s.getId_objekta(), s.getNaziv(), s.getJacina()});
+        }
+
+          
+    }
+     
+      private void ucitajObjekte() throws Exception {
 
        objekti = Controller.getInstance().loadSveObjekte();
        DefaultTableModel modelDoznake = (DefaultTableModel) tblObjekat.getModel();
+       
+        modelDoznake.setRowCount(0); 
 
         for (Objekat o : objekti) {
             modelDoznake.addRow(new Object[]{o.getId_objekta(), o.getKatastarska_pacrela(), o.getVrsta_objekta(), o.getUkupna_snaga()});
@@ -336,18 +362,13 @@ public class SnagaForm extends javax.swing.JFrame {
          if (cmbObjekat != null) {
             cmbObjekat.removeAllItems();
             for (Objekat o : objekti) {
-                cmbObjekat.addItem(o.getVrsta_objekta());
+                cmbObjekat.addItem(String.valueOf(o.getId_objekta()));
             }
         } else {
             System.err.println("ComboBox (cmbObjekat) je null.");
         }
+          sacuvajOriginalneVrednosti(tblObjekat);
          
-        snaga = Controller.getInstance().loadSveSnage();
-        DefaultTableModel modelSnage = (DefaultTableModel) tblSnaga.getModel();
-
-        for (Snaga s : snaga) {
-            modelSnage.addRow(new Object[]{s.getId_snage(), s.getId_objekta(), s.getNaziv(), s.getJacina()});
-        }
 
           
     }
@@ -390,16 +411,29 @@ public class SnagaForm extends javax.swing.JFrame {
             model.addRow(new Object[]{s.getId_snage(), s.getId_objekta(), s.getNaziv(), s.getJacina()});
         }
     }
-      
-      private void popuniFormuSnagom(Snaga snaga) throws Exception {
-        if (snaga != null) {
-            txtIDSnage.setText(String.valueOf(snaga.getId_snage()));
-            txtNaziv.setText(String.valueOf(snaga.getNaziv()));
-            txtJacina.setText(String.valueOf(snaga.getJacina()));
-            pronadjeniObjekti = Controller.getInstance().searchObjekti("ID_OBJEKTA='" + String.valueOf(snaga.getId_objekta()) + "'");
-            cmbObjekat.setSelectedItem(pronadjeniObjekti.get(0).getVrsta_objekta());
+     private void popuniFormuSnagom(Snaga snaga) throws Exception {
+    if (snaga != null) {
+        txtIDSnage.setText(String.valueOf(snaga.getId_snage()));
+        txtNaziv.setText(String.valueOf(snaga.getNaziv()));
+        txtJacina.setText(String.valueOf(snaga.getJacina()));
+
+        pronadjeniObjekti = Controller.getInstance().searchObjekti("ID_OBJEKTA='" + snaga.getId_objekta() + "'");
+
+        if (cmbObjekat != null) {
+            cmbObjekat.removeAllItems();  
+            for (Objekat o : objekti) {   
+                cmbObjekat.addItem(String.valueOf(o.getId_objekta()));
+            }
+
+            if (pronadjeniObjekti != null && !pronadjeniObjekti.isEmpty()) {
+                cmbObjekat.setSelectedItem(String.valueOf(pronadjeniObjekti.get(0).getId_objekta()));
+            }
+        } else {
+            System.out.println("ComboBox (cmbObjekat) je null.");
         }
     }
+}
+
       
       private void setUpTableListenerSnaga() {
         tblSnaga.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
@@ -412,7 +446,6 @@ public class SnagaForm extends javax.swing.JFrame {
                         if (pronadjenaSnaga != null && !pronadjenaSnaga.isEmpty()) {
                             izabranaSnaga = pronadjenaSnaga.get(0);
                         }
-                        // POPUNI NJEGOVIM SPISKOVIMA
                         popuniFormuSnagom(izabranaSnaga);
                         originalneVrednosti.clear();
                         sacuvajOriginalneVrednosti(tblObjekat);
@@ -436,7 +469,6 @@ public class SnagaForm extends javax.swing.JFrame {
                         if (pronadjeniObjekti != null && !pronadjeniObjekti.isEmpty()) {
                             izabraniObjekat = pronadjeniObjekti.get(0);
                         }
-                        // POPUNI NJEGOVIM SPISKOVIMA
                         popuniTabeluSnagama(izabraniObjekat.getId_objekta());
                     } catch (Exception ex) {
                         Logger.getLogger(SnagaForm.class.getName()).log(Level.SEVERE, null, ex);
@@ -446,22 +478,123 @@ public class SnagaForm extends javax.swing.JFrame {
         }
         );
     }
+      
+      private Snaga preuzmiPodatkeZaSNagu() throws Exception {
+        int id_snage = Integer.parseInt(txtIDSnage.getText());
+        String naziv = txtNaziv.getText();
+        float jacina = Float.parseFloat(txtJacina.getText());
+        String objekat = (String) cmbObjekat.getSelectedItem();
+        List<Objekat> pronadjenObjekat = Controller.getInstance().searchObjekti("ID_OBJEKTA='" + objekat + "'");
+
+        if (pronadjenObjekat.isEmpty()) {
+            throw new Exception("Objekat nije pronađen.");
+        }
+        int id_objekta = pronadjenObjekat.get(0).getId_objekta();
+        
+
+        Snaga snaga = new Snaga(id_snage, id_objekta, naziv, jacina);
+
+        return snaga;
+    }
+      
+  public String generisiSetKlauzuObjekat(JTable table, int selectedRow) {
+    DefaultTableModel model = (DefaultTableModel) table.getModel();
+    StringBuilder setClause = new StringBuilder();
+
+    int idObjekta = Integer.parseInt(model.getValueAt(selectedRow, 0).toString());
+
+    System.out.println("Svi sačuvani ID-jevi: " + originalneVrednosti.keySet());
+    if (!originalneVrednosti.containsKey(idObjekta)) {
+        System.out.println("ID objekta nije pronađen u originalnim vrednostima: " + idObjekta);
+        return "";
+    }
+
+    String[] original = originalneVrednosti.get(idObjekta);
+    String katastarska_parcela = model.getValueAt(selectedRow, 1) != null ? model.getValueAt(selectedRow, 1).toString() : "0";
+    String vrsta_objekta = model.getValueAt(selectedRow, 2) != null ? model.getValueAt(selectedRow, 2).toString() : "";
+    String ukupna_snaga = model.getValueAt(selectedRow, 3) != null ? model.getValueAt(selectedRow, 3).toString() : "0";
+    String originalKatastarskaParcela = original[0];
+    String originalVrstaObjekta = original[1];
+    String originalUkupnaSnaga = original[2];
+
+    if (!katastarska_parcela.equals(originalKatastarskaParcela)) {
+        setClause.append("KATASTARSKA_PARCELA = '").append(katastarska_parcela).append("'");
+    }
+    
+    if (!vrsta_objekta.equals(originalVrstaObjekta)) {
+        setClause.append("VRSTA_OBJEKTA = '").append(vrsta_objekta).append("'");
+    }
+    if (!ukupna_snaga.equals(originalUkupnaSnaga)) {
+        if (setClause.length() > 0) {
+            setClause.append(", ");
+        }
+        setClause.append("UKUPNA_SNAGA = ").append(ukupna_snaga);
+    }
+
+    System.out.println("Generisana SET klauzula: " + setClause.toString());
+
+    return setClause.toString();
+}
+
+      
 
 
     private void btnSacuvajActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSacuvajActionPerformed
-        
+        try {
+            Snaga snaga = preuzmiPodatkeZaSNagu();
+
+            Controller.getInstance().insertSnaga(snaga);
+
+            ucitajPodatkeUFormu();
+            ucitajObjekte();
+        } catch (Exception ex) {
+            Logger.getLogger(SnagaForm.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(null, "Došlo je do greške: " + ex.getMessage(), "Greška", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_btnSacuvajActionPerformed
 
     private void btnIzmeniActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIzmeniActionPerformed
-       
+        try {
+            Snaga snaga = preuzmiPodatkeZaSNagu();
+
+            Controller.getInstance().updateSnaga(snaga);
+
+            ucitajPodatkeUFormu();
+            ucitajObjekte();
+        } catch (Exception ex) {
+            Logger.getLogger(SnagaForm.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(null, "Došlo je do greške: " + ex.getMessage(), "Greška", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_btnIzmeniActionPerformed
 
     private void btnObrisiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnObrisiActionPerformed
-        
+         try {
+            Snaga snaga = jeIzabranaSnaga();
+
+            Controller.getInstance().deleteSnaga(snaga);
+
+            ucitajPodatkeUFormu();
+            ucitajObjekte();
+
+        } catch (Exception ex) {
+            Logger.getLogger(SnagaForm.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(null, "Došlo je do greške: " + ex.getMessage(), "Greška", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_btnObrisiActionPerformed
 
     private void btnIzmeniObjekatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIzmeniObjekatActionPerformed
-        
+        try {
+            Objekat o = jeIzabranObjekat();
+
+            String setClause = generisiSetKlauzuObjekat(tblObjekat, tblObjekat.getSelectedRow());
+
+            Controller.getInstance().updateObjekat(o, setClause);
+
+            ucitajObjekte();
+        } catch (Exception ex) {
+            Logger.getLogger(SnagaForm.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(null, "Došlo je do greške: " + ex.getMessage(), "Greška", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_btnIzmeniObjekatActionPerformed
 
     /**

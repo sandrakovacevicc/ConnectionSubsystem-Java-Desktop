@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
@@ -530,6 +531,7 @@ public class ObjekatForm extends javax.swing.JFrame {
        objekti = Controller.getInstance().loadSveObjekte();
        DefaultTableModel modelDoznake = (DefaultTableModel) tblObjekat.getModel();
 
+       modelDoznake.setRowCount(0); 
         for (Objekat o : objekti) {
             modelDoznake.addRow(new Object[]{o.getId_objekta(), o.getKatastarska_pacrela(), o.getVrsta_objekta(), o.getUkupna_snaga()});
         }
@@ -724,18 +726,20 @@ private void popuniFormuIzabranimObjektom(Objekat o) throws Exception {
                         if (pronadjeniObjekti != null && !pronadjeniObjekti.isEmpty()) {
                             o = pronadjeniObjekti.get(0);
                         }
-                        // POPUNI NJEGOVIM SPISKOVIMA
                         popuniFormuIzabranimObjektom(o);
                         popuniTabeluMolbama(o.getId_objekta());
                         originalneVrednostiObjekta.clear();
-                        //sacuvajOriginalneVrednosti(tblMolba);
                     } catch (Exception ex) {
                         Logger.getLogger(ObjekatForm.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
             }
 
-        private Objekat jeIzabranObjekat() {
+        }
+        );
+    }
+ 
+  private Objekat jeIzabranObjekat() {
         int objekatID = 0;
         int izabraniObjekatIndex = tblObjekat.getSelectedRow();
         if (izabraniObjekatIndex >= 0) {
@@ -747,8 +751,8 @@ private void popuniFormuIzabranimObjektom(Objekat o) throws Exception {
         Objekat o = new Objekat();
         o.setId_objekta(objekatID);
         return o;            }
-
-        private void popuniTabeluMolbama(int id_objekta) throws Exception {
+ 
+  private void popuniTabeluMolbama(int id_objekta) throws Exception {
         DefaultTableModel model = (DefaultTableModel) tblMolba.getModel();
         model.setRowCount(0);
 
@@ -757,9 +761,6 @@ private void popuniFormuIzabranimObjektom(Objekat o) throws Exception {
         for (MolbaZaUrbanizam m : molbe) {
             model.addRow(new Object[]{m.getId_molbe(), m.getDatum(), m.getDelovodni_br(), m.getBr_iz_LKRM(), m.getId_objekta()});
         }            }
-        }
-        );
-    }
  
   private MolbaZaUrbanizam jeIzabranaMolba() {
         int molbaID = 0;
@@ -786,15 +787,17 @@ private void popuniFormuIzabranimObjektom(Objekat o) throws Exception {
                         if (pronadjeneMolbe != null && !pronadjeneMolbe.isEmpty()) {
                             izabranaMolba = pronadjeneMolbe.get(0);
                         }
-                        //POPUNI FORMU STAVKOM
                         popuniFormuMolbom(izabranaMolba);
                     } catch (Exception ex) {
                         Logger.getLogger(ObjekatForm.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
             }
-
-            private void popuniFormuMolbom(MolbaZaUrbanizam izabranaMolba) throws Exception {
+        }
+        );
+    }
+  
+  private void popuniFormuMolbom(MolbaZaUrbanizam izabranaMolba) throws Exception {
             if (izabranaMolba != null) {
             txtIDMolbe.setText(String.valueOf(izabranaMolba.getId_molbe()));
             txtDelovodniBr.setText(String.valueOf(izabranaMolba.getDelovodni_br()));
@@ -834,9 +837,70 @@ private void popuniFormuIzabranimObjektom(Objekat o) throws Exception {
           
         }
             }
+  
+   private Objekat preuzmiPodatkeZaObjekat() throws Exception {
+        int id_objekta = Integer.parseInt(txtObjekatID.getText());
+        String katastarska_parcela = txtKatastarskaParcela.getText();
+        float ukupna_snaga = txtUkupnaSnaga.getText().isEmpty() ? 0 : Float.parseFloat(txtUkupnaSnaga.getText());
+      
+        if (cmbNacinGrejanja.getSelectedItem() == null || cmbNamenaObjekta.getSelectedItem() == null ||
+            cmbVrstaPrikljucka.getSelectedItem() == null || cmbInstalacija.getSelectedItem() == null || cmbVrstaObjekta.getSelectedItem() == null) {
+            throw new Exception("Molimo vas da odaberete sve potrebne vrednosti iz padajućih menija.");
         }
-        );
+
+ 
+        String vrsta_objekta = (String) cmbVrstaObjekta.getSelectedItem();
+        
+        String nacin_grejanja = (String) cmbNacinGrejanja.getSelectedItem();
+        List<NacinGrejanja> pronadjenNacinGrejanja = Controller.getInstance().searchNacinGrejanja("NAZIV='" + nacin_grejanja + "'");
+
+        if (pronadjenNacinGrejanja.isEmpty()) {
+            throw new Exception("Nacin grejanja nije pronađen.");
+        }
+        int id_nacin_grejanja = pronadjenNacinGrejanja.get(0).getId_nacin_grejanja();
+        
+        String vrsta_prikljucka = (String) cmbVrstaPrikljucka.getSelectedItem();
+        List<VrstaPrikljucka> pronadjenaVrstaPrikljucka = Controller.getInstance().searchVrstaPrikljucka("NAZIV='" + vrsta_prikljucka + "'");
+
+        if (pronadjenaVrstaPrikljucka.isEmpty()) {
+            throw new Exception("Vrsta prikljucka nije pronađena.");
+        }
+        int id_vrste_prikjucka = pronadjenaVrstaPrikljucka.get(0).getId_vrste_prikljucka();
+        
+        String instalacija = (String) cmbInstalacija.getSelectedItem();
+        List<TipInstalacije> pronadjenaInstalacija = Controller.getInstance().searchInstalacija("TIP='" + instalacija + "'");
+
+        if (pronadjenaInstalacija.isEmpty()) {
+            throw new Exception("Instalacija nije pronađena.");
+        }
+        int id_instalacije = pronadjenaInstalacija.get(0).getId_instalacije();
+        
+        String namena_objekta = (String) cmbNamenaObjekta.getSelectedItem();
+        List<NamenaObjekta> pronadjenaNamena = Controller.getInstance().searchNamenaObjekta("NAZIV='" + namena_objekta + "'");
+
+        if (pronadjenaNamena.isEmpty()) {
+            throw new Exception("Namena objekta nije pronađena.");
+        }
+        int id_namene_objekta = pronadjenaNamena.get(0).getId_namena_objekta();
+        
+        Object izabraniPostanskiBr = cmbPostanskiBrObjekat.getSelectedItem();
+        int postanskiBr = Integer.parseInt(izabraniPostanskiBr.toString());
+        
+        Object izabranaUlica = cmbUlicaObjekat.getSelectedItem();
+        pronadjeneUlice = Controller.getInstance().searchUlice("NAZIV='" + izabranaUlica.toString() + "'");
+        int ulicaID = pronadjeneUlice.get(0).getId_ulice();
+        
+        
+
+
+        Objekat o = new Objekat(id_objekta, katastarska_parcela, postanskiBr, ulicaID, id_nacin_grejanja, id_namene_objekta, id_vrste_prikjucka, id_instalacije, vrsta_objekta, ukupna_snaga);
+
+        return o;
+
     }
+
+  
+  
 
     private void btnSacuvajMolbuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSacuvajMolbuActionPerformed
         
@@ -851,16 +915,40 @@ private void popuniFormuIzabranimObjektom(Objekat o) throws Exception {
     }//GEN-LAST:event_btnObrisiMolbuActionPerformed
 
     private void btnSacuvajObjekatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSacuvajObjekatActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnSacuvajObjekatActionPerformed
+        try {
+            Objekat objekat = preuzmiPodatkeZaObjekat();
+
+            Controller.getInstance().insertObjekat(objekat);
+
+            ucitajPodatkeUFormu();
+        } catch (Exception ex) {
+            Logger.getLogger(ObjekatForm.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(null, "Došlo je do greške: " + ex.getMessage(), "Greška", JOptionPane.ERROR_MESSAGE);
+        }    }//GEN-LAST:event_btnSacuvajObjekatActionPerformed
 
     private void btnIzmeniObjekatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIzmeniObjekatActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnIzmeniObjekatActionPerformed
+ try {
+            Objekat o = preuzmiPodatkeZaObjekat();
+
+            Controller.getInstance().updateObjekat(o);
+
+            ucitajPodatkeUFormu();
+        } catch (Exception ex) {
+            Logger.getLogger(ObjekatForm.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(null, "Došlo je do greške: " + ex.getMessage(), "Greška", JOptionPane.ERROR_MESSAGE);
+        }    }//GEN-LAST:event_btnIzmeniObjekatActionPerformed
 
     private void btnObrisiObjekatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnObrisiObjekatActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnObrisiObjekatActionPerformed
+ try {
+            Objekat o = jeIzabranObjekat();
+
+            Controller.getInstance().deleteObjekat(o);
+
+            ucitajPodatkeUFormu();
+        } catch (Exception ex) {
+            Logger.getLogger(ObjekatForm.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(null, "Došlo je do greške: " + ex.getMessage(), "Greška", JOptionPane.ERROR_MESSAGE);
+        }    }//GEN-LAST:event_btnObrisiObjekatActionPerformed
 
     /**
      * @param args the command line arguments

@@ -1005,5 +1005,189 @@ public class Controller {
         }
         return snaga;
     }
+         
+             public void deleteSnaga(Snaga s) throws Exception {
+    try {
+        db.connect();
+        int answer = JOptionPane.showConfirmDialog(null, "Zaista želite da obrišete snagu?", "Brisanje", JOptionPane.YES_NO_OPTION);
+        if (answer == JOptionPane.NO_OPTION) {
+            return;
+        }
+
+        try {
+            db.delete(s);
+            JOptionPane.showMessageDialog(null, "Snaga uspešno obrisana.", "Brisanje", JOptionPane.INFORMATION_MESSAGE);
+        } catch (SQLIntegrityConstraintViolationException ex) {
+            JOptionPane.showMessageDialog(null, "Ne možete obrisati ovu snagu jer postoje povezani zapisi.", "Greška", JOptionPane.ERROR_MESSAGE);
+        }
+
+    } catch (SQLException ex) {
+        JOptionPane.showMessageDialog(null, "Došlo je do greške pri brisanju snage.", "Greška", JOptionPane.ERROR_MESSAGE);
+    } finally {
+        try {
+            db.disconnect();
+        } catch (Exception ex) {
+            Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+}
+             
+             public void insertSnaga(Snaga s) throws Exception {
+        try {
+            db.connect();
+            db.insert(s);
+            JOptionPane.showMessageDialog(null, "Uspesno ste uneli");
+
+        } catch (Exception ex) {
+            throw ex;
+        } finally {
+            try {
+                db.disconnect();
+            } catch (Exception ex) {
+                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+             
+              public void updateSnaga(Snaga s) throws Exception {
+        try {
+            db.connect();
+            int answer = JOptionPane.showConfirmDialog(null, "Zelite li da izmenite snagu?", "Izmena", JOptionPane.YES_NO_OPTION);
+            if (answer == 1) {
+                return;
+            }
+            db.update(s);
+            JOptionPane.showMessageDialog(null, "Uspesno ste izmenili");
+
+        } catch (Exception ex) {
+            throw ex;
+        } finally {
+            try {
+                db.disconnect();
+            } catch (Exception ex) {
+                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+              
+    public void updateObjekat(Objekat o, String setClause) throws Exception {
+    try {
+        db.connect();
+        int answer = JOptionPane.showConfirmDialog(null, "Želite li da izmenite objekat?", "Izmena", JOptionPane.YES_NO_OPTION);
+        if (answer == JOptionPane.YES_OPTION) {
+            db.updatePartial(o, setClause);
+            JOptionPane.showMessageDialog(null, "Uspešno ste izmenili objekat.");
+        }
+    } catch (SQLIntegrityConstraintViolationException ex) {
+        JOptionPane.showMessageDialog(null, "Greška: Vrsta objekta moze biti - 'Bazna stanica mobilne telefonije', 'Industrijski objekat', 'Poslovni prostor' ili 'Stambeni objekat !", "Greška", JOptionPane.ERROR_MESSAGE);
+    } catch (SQLException ex) {
+        JOptionPane.showMessageDialog(null, "SQL Greška: " + ex.getMessage(), "Greška", JOptionPane.ERROR_MESSAGE);
+    } catch (Exception ex) {
+        JOptionPane.showMessageDialog(null, "Došlo je do greške: " + ex.getMessage(), "Greška", JOptionPane.ERROR_MESSAGE);
+    } finally {
+        try {
+            db.disconnect();
+        } catch (Exception ex) {
+            Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
         
+}
+    
+      public List<NacinGrejanja> searchNacinGrejanja(String whereClause) throws Exception {
+        List<NacinGrejanja> grejanje = new LinkedList<NacinGrejanja>();
+        try {
+            db.connect();
+            grejanje = (List<NacinGrejanja>) (Object) db.getAllWithWhere(new NacinGrejanja(), whereClause);
+        } catch (Exception ex) {
+            throw ex;
+        } finally {
+            try {
+                db.disconnect();
+            } catch (Exception ex) {
+                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return grejanje;
+    }
+      
+       public List<TipInstalacije> searchInstalacija(String whereClause) throws Exception {
+        List<TipInstalacije> instalacija = new LinkedList<TipInstalacije>();
+        try {
+            db.connect();
+            instalacija = (List<TipInstalacije>) (Object) db.getAllWithWhere(new TipInstalacije(), whereClause);
+        } catch (Exception ex) {
+            throw ex;
+        } finally {
+            try {
+                db.disconnect();
+            } catch (Exception ex) {
+                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return instalacija;
+    }
+       
+             public void insertObjekat(Objekat o) throws Exception {
+        try {
+            db.connect();
+            db.insert(o);
+            JOptionPane.showMessageDialog(null, "Uspesno ste uneli");
+
+        } catch (Exception ex) {
+            throw ex;
+        } finally {
+            try {
+                db.disconnect();
+            } catch (Exception ex) {
+                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+             
+        public void updateObjekat(Objekat o) throws Exception {
+        try {
+            db.connect();
+            int answer = JOptionPane.showConfirmDialog(null, "Zelite li da izmenite objekat?", "Izmena", JOptionPane.YES_NO_OPTION);
+            if (answer == 1) {
+                return;
+            }
+            db.update(o);
+            JOptionPane.showMessageDialog(null, "Uspesno ste izmenili");
+
+        } catch (Exception ex) {
+            throw ex;
+        } finally {
+            try {
+                db.disconnect();
+            } catch (Exception ex) {
+                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+        public void deleteObjekat(Objekat o) throws Exception {
+    try {
+        db.connect();
+        int answer = JOptionPane.showConfirmDialog(null, "Zaista želite da obrišete objekat?", "Brisanje", JOptionPane.YES_NO_OPTION);
+        if (answer == JOptionPane.NO_OPTION) {
+            return;
+        }
+
+        try {
+            db.delete(o);
+            JOptionPane.showMessageDialog(null, "Objekat uspešno obrisan.", "Brisanje", JOptionPane.INFORMATION_MESSAGE);
+        } catch (SQLIntegrityConstraintViolationException ex) {
+            JOptionPane.showMessageDialog(null, "Ne možete obrisati ovaj objekat jer postoje povezani zapisi.", "Greška", JOptionPane.ERROR_MESSAGE);
+        }
+
+    } catch (SQLException ex) {
+        JOptionPane.showMessageDialog(null, "Došlo je do greške pri brisanju objekta.", "Greška", JOptionPane.ERROR_MESSAGE);
+    } finally {
+        try {
+            db.disconnect();
+        } catch (Exception ex) {
+            Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+}
 }

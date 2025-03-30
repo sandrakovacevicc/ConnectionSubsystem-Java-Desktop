@@ -142,23 +142,23 @@ public class MolbaZaUrbanizam extends DomainObject{
         return "ID_MOLBE, DATUM, DELOVODNI_BR, BR_IZ_LKRM, ID_OBJEKTA, ID_KONTAKT_OSOBE, ID_KOORDINATORA_TEHNIKE, ID_UPRAVE, POSTANSKI_BR, ID_ULICE";
     }
 
-    @Override
+   @Override
     public String getColumnValues() {
     SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+    String datumIzdavanja = (datum != null) ? 
+        String.format("TO_DATE('%s', 'DD-MM-YYYY')", sdf.format(datum)) : "NULL";
 
-        String datumIzdavanja = datum != null ? "TO_DATE('" + sdf.format(datum) + "', 'DD-MM-YYYY')" : "NULL";
+    return String.format("%d, %s, %d, br_iz_LKRM(%d), %d, %d, %d, %d",
+            id_molbe,
+            datumIzdavanja,
+            delovodni_br,
+            br_iz_LKRM,
+            id_objekta,
+            id_kontakt_osobe,
+            id_koordinatora_tehnike,
+            id_uprave);
+}
 
-        return String.format("%d, %s, %d, br_iz_LKRM(%d),%d , %d , %d , %d, %d , %d",
-                id_molbe,
-                datumIzdavanja,
-                delovodni_br,
-                br_iz_LKRM,
-                id_objekta,
-                id_kontakt_osobe,
-                id_koordinatora_tehnike,
-                id_uprave,
-                postanski_br,
-                id_ulice);    }
 
     @Override
     public String getUpdateClause() {

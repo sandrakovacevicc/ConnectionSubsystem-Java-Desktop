@@ -4,6 +4,7 @@ import DataBase.DatabaseBroker;
 import Domain.Object.entities.Direktor;
 import Domain.Object.entities.Filijala;
 import Domain.Object.entities.Grad;
+import Domain.Object.entities.GradskaUprava;
 import Domain.Object.entities.KatastarskaOpstina;
 import Domain.Object.entities.MolbaZaUrbanizam;
 import Domain.Object.entities.NacinGrejanja;
@@ -989,6 +990,39 @@ public class Controller {
         return snage;
     }
          
+           public List<GradskaUprava> loadSveUprave() throws Exception {
+        List<GradskaUprava> uprave = new LinkedList<GradskaUprava>();
+        try {
+            db.connect();
+            uprave = (List<GradskaUprava>) (Object) db.getAll(new GradskaUprava());
+        } catch (Exception ex) {
+            throw ex;
+        } finally {
+            try {
+                db.disconnect();
+            } catch (Exception ex) {
+                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return uprave;
+    }
+             public List<GradskaUprava> searchUprave(String whereClause) throws Exception {
+        List<GradskaUprava> uprava = new LinkedList<GradskaUprava>();
+        try {
+            db.connect();
+            uprava = (List<GradskaUprava>) (Object) db.getAllWithWhere(new GradskaUprava(), whereClause);
+        } catch (Exception ex) {
+            throw ex;
+        } finally {
+            try {
+                db.disconnect();
+            } catch (Exception ex) {
+                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return uprava;
+    }
+         
          public List<Snaga> searchSnaga(String whereClause) throws Exception {
         List<Snaga> snaga = new LinkedList<Snaga>();
         try {
@@ -1190,4 +1224,63 @@ public class Controller {
         }
     }
 }
+        
+                public void insertMolba(MolbaZaUrbanizam m) throws Exception {
+        try {
+            db.connect();
+            db.insert(m);
+            JOptionPane.showMessageDialog(null, "Uspesno ste uneli");
+
+        } catch (Exception ex) {
+            throw ex;
+        } finally {
+            try {
+                db.disconnect();
+            } catch (Exception ex) {
+                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+               
+       
+       public void deleteMolba(MolbaZaUrbanizam m) throws Exception {
+        try {
+            db.connect();
+            int answer = JOptionPane.showConfirmDialog(null, "Zaista zelite da obrisete molbu?", "Brisanje", JOptionPane.YES_NO_OPTION);
+            if (answer == 1) {
+                return;
+            }
+            db.delete(m);
+
+        } catch (Exception ex) {
+            throw ex;
+        } finally {
+            try {
+                db.disconnect();
+            } catch (Exception ex) {
+                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+       
+         public void updateMolba(MolbaZaUrbanizam m) throws Exception {
+        try {
+            db.connect();
+            int answer = JOptionPane.showConfirmDialog(null, "Zelite li da izmenite molbu?", "Izmena", JOptionPane.YES_NO_OPTION);
+            if (answer == 1) {
+                return;
+            }
+            db.update(m);
+            JOptionPane.showMessageDialog(null, "Uspesno ste izmenili");
+
+        } catch (Exception ex) {
+            throw ex;
+        } finally {
+            try {
+                db.disconnect();
+            } catch (Exception ex) {
+                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
 }

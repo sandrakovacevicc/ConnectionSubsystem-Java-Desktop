@@ -4,6 +4,7 @@
  */
 package forms;
 
+import Domain.Object.entities.GradskaUprava;
 import Domain.Object.entities.MolbaZaUrbanizam;
 import Domain.Object.entities.NacinGrejanja;
 import Domain.Object.entities.NamenaObjekta;
@@ -15,7 +16,9 @@ import Domain.Object.entities.ZaposleniPogled;
 import controller.Controller;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -50,6 +53,8 @@ public class ObjekatForm extends javax.swing.JFrame {
     List<Ulica> pronadjeneUlice = new LinkedList<Ulica>();
     List<MolbaZaUrbanizam> molbe = new LinkedList<MolbaZaUrbanizam>();
     List<MolbaZaUrbanizam> pronadjeneMolbe = new LinkedList<MolbaZaUrbanizam>();
+    List<GradskaUprava> uprave = new LinkedList<GradskaUprava>();
+    List<GradskaUprava> pronadjeneUprave = new LinkedList<GradskaUprava>();
         private HashMap<Integer, String[]> originalneVrednostiObjekta = new HashMap<>();
 
     
@@ -121,6 +126,8 @@ public class ObjekatForm extends javax.swing.JFrame {
         jLabel22 = new javax.swing.JLabel();
         cmbUlicaObjekat = new javax.swing.JComboBox<>();
         jLabel23 = new javax.swing.JLabel();
+        jLabel24 = new javax.swing.JLabel();
+        cmbUprava = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -292,6 +299,10 @@ public class ObjekatForm extends javax.swing.JFrame {
 
         jLabel23.setText("Postanski broj");
 
+        jLabel24.setText("Gradska uprava");
+
+        cmbUprava.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -323,12 +334,14 @@ public class ObjekatForm extends javax.swing.JFrame {
                                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                             .addComponent(jLabel12)
                                             .addComponent(jLabel18)
-                                            .addComponent(jLabel17))
+                                            .addComponent(jLabel17)
+                                            .addComponent(jLabel24))
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(txtBrizLKRM, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(txtBrizLKRM, javax.swing.GroupLayout.DEFAULT_SIZE, 128, Short.MAX_VALUE)
                                     .addComponent(cmbKontaktOsoba, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(cmbObjekat, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(cmbObjekat, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(cmbUprava, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                 .addGap(54, 54, 54)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(layout.createSequentialGroup()
@@ -512,7 +525,11 @@ public class ObjekatForm extends javax.swing.JFrame {
                                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                                 .addComponent(jLabel19)
                                                 .addComponent(cmbKoordinatorTehnike, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                                .addGap(0, 59, Short.MAX_VALUE))))))
+                                .addGap(18, 18, 18)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jLabel24)
+                                    .addComponent(cmbUprava, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(0, 19, Short.MAX_VALUE))))))
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
                     .addGap(40, 40, 40)
@@ -539,10 +556,19 @@ public class ObjekatForm extends javax.swing.JFrame {
          if (cmbObjekat != null) {
             cmbObjekat.removeAllItems();
             for (Objekat o : objekti) {
-                cmbObjekat.addItem(o.getVrsta_objekta());
+                cmbObjekat.addItem(String.valueOf(o.getId_objekta()));
             }
         } else {
             System.err.println("ComboBox (cmbObjekat) je null.");
+        }
+         uprave= Controller.getInstance().loadSveUprave();
+          if (cmbUprava != null) {
+            cmbUprava.removeAllItems();
+            for (GradskaUprava g : uprave) {
+                cmbUprava.addItem(g.getNaziv());
+            }
+        } else {
+            System.err.println("ComboBox (cmbUprava) je null.");
         }
          
          grejanje = Controller.getInstance().loadSvaGrejanja();
@@ -585,7 +611,17 @@ public class ObjekatForm extends javax.swing.JFrame {
             System.err.println("ComboBox (cmbNamenaObjekta) je null.");
         }
           
-          zaposleni= Controller.getInstance().loadSveZaposlene();
+          namenaObjekta = Controller.getInstance().loadSveNameneObjekta();
+          if (cmbNamenaObjekta != null) {
+            cmbNamenaObjekta.removeAllItems();
+            for (NamenaObjekta n : namenaObjekta) {
+                cmbNamenaObjekta.addItem(n.getNaziv());
+            }
+        } else {
+            System.err.println("ComboBox (cmbNamenaObjekta) je null.");
+        }
+          
+        zaposleni= Controller.getInstance().loadSveZaposlene();
           if (cmbKontaktOsoba != null) {
             cmbKontaktOsoba.removeAllItems();
             for (ZaposleniPogled z : zaposleni) {
@@ -607,6 +643,7 @@ public class ObjekatForm extends javax.swing.JFrame {
           ucitajPostanskeBrojeve();
           
           cmbUlica.setEnabled(false);
+          cmbPostanskiBr.setEnabled(false);
 
     cmbPostanskiBr.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent evt) {
@@ -803,6 +840,10 @@ private void popuniFormuIzabranimObjektom(Objekat o) throws Exception {
             txtDelovodniBr.setText(String.valueOf(izabranaMolba.getDelovodni_br()));
 
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+            if (izabranaMolba.getDatum() == null) {
+        System.out.println("Greška: Datum je null!");
+             return;
+        }
             txtDatum.setText(dateFormat.format(izabranaMolba.getDatum()));
 
             txtBrizLKRM.setText(String.valueOf(izabranaMolba.getBr_iz_LKRM()));
@@ -825,7 +866,14 @@ private void popuniFormuIzabranimObjektom(Objekat o) throws Exception {
         if (izabranaMolba.getId_objekta() != 0) {
             List<Objekat> objekat = Controller.getInstance().searchObjekti("ID_OBJEKTA='" + izabranaMolba.getId_objekta() + "'");
             if (!objekat.isEmpty()) {
-                cmbObjekat.setSelectedItem(objekat.get(0).toString());
+                cmbObjekat.setSelectedItem(String.valueOf(objekat.get(0).getId_objekta()));
+            }
+        }
+        
+        if (izabranaMolba.getId_uprave()!= 0) {
+            List<GradskaUprava> uprava = Controller.getInstance().searchUprave("ID_UPRAVE='" + izabranaMolba.getId_uprave() + "'");
+            if (!uprava.isEmpty()) {
+                cmbUprava.setSelectedItem(uprava.get(0).getNaziv());
             }
         }
 
@@ -833,6 +881,8 @@ private void popuniFormuIzabranimObjektom(Objekat o) throws Exception {
             cmbPostanskiBr.setSelectedItem(String.valueOf(pronadjeneUlice.get(0).getPostanski_br()));
             cmbUlica.setEnabled(true);
             cmbUlica.setSelectedItem(String.valueOf(pronadjeneUlice.get(0).getNaziv()));
+            cmbUlica.setEnabled(false);
+            cmbPostanskiBr.setEnabled(false);
 
           
         }
@@ -899,19 +949,131 @@ private void popuniFormuIzabranimObjektom(Objekat o) throws Exception {
 
     }
 
-  
+  private MolbaZaUrbanizam preuzmiPodatkeZaMolbu() throws Exception {
+        int id_molbe = Integer.parseInt(txtIDMolbe.getText());
+        int br_iz_LKRM = Integer.parseInt(txtBrizLKRM.getText());
+        String rawDatum = txtDatum.getText();
+
+        SimpleDateFormat inputFormat = new SimpleDateFormat("dd-MM-yyyy");
+
+        Date datum = null;
+
+        try {
+
+            if (!rawDatum.isEmpty()) {
+                datum = inputFormat.parse(rawDatum);
+            }
+        } catch (ParseException e) {
+            System.err.println("Neispravan format datuma: " + e.getMessage());
+
+        }
+        
+        String delovodni_broj = txtDelovodniBr.getText();
+      
+        if (cmbObjekat.getSelectedItem() == null || cmbKontaktOsoba.getSelectedItem() == null ||
+            cmbKoordinatorTehnike.getSelectedItem() == null || cmbPostanskiBr.getSelectedItem() == null || cmbUlica.getSelectedItem() == null) {
+            throw new Exception("Molimo vas da odaberete sve potrebne vrednosti iz padajućih menija.");
+        }
+
+ 
+        int id_objekta = Integer.parseInt((String) cmbObjekat.getSelectedItem());
+        
+        String imePrezime = (String) cmbKontaktOsoba.getSelectedItem();
+        String[] delovi = imePrezime.trim().split("\\s+"); 
+
+        if (delovi.length < 2) {
+            throw new Exception("Neispravan format imena i prezimena zaposlenog.");
+        }
+
+        String ime = delovi[0];  
+        String prezime = delovi[delovi.length - 1];
+
+
+        List<ZaposleniPogled> pronadjeniZaposleniKontakt = Controller.getInstance().searchZaposleni("ime='" + ime + "' AND prezime='" + prezime + "'");
+
+        if (pronadjeniZaposleniKontakt.isEmpty()) {
+            throw new Exception("Zaposleni sa imenom " + ime + " i prezimenom " + prezime + " nije pronađen.");
+        }
+
+        int id_kontaktOsobe = pronadjeniZaposleniKontakt.get(0).getId_zaposlenog();
+        
+        String imePrezimeK = (String) cmbKoordinatorTehnike.getSelectedItem();
+        String[] deloviK = imePrezimeK.trim().split("\\s+"); 
+
+        if (deloviK.length < 2) {
+            throw new Exception("Neispravan format imena i prezimena zaposlenog.");
+        }
+
+        String imeK = deloviK[0];  
+        String prezimeK = deloviK[deloviK.length - 1];
+
+
+        List<ZaposleniPogled> pronadjeniZaposleniK = Controller.getInstance().searchZaposleni("ime='" + imeK + "' AND prezime='" + prezimeK + "'");
+
+        if (pronadjeniZaposleniK.isEmpty()) {
+            throw new Exception("Zaposleni sa imenom " + ime + " i prezimenom " + prezime + " nije pronađen.");
+        }
+        
+        int id_koordinatora = pronadjeniZaposleniK.get(0).getId_zaposlenog();
+        
+        
+        Object izabraniPostanskiBr = cmbPostanskiBrObjekat.getSelectedItem();
+        int postanskiBr = Integer.parseInt(izabraniPostanskiBr.toString());
+        
+        Object izabranaUlica = cmbUlicaObjekat.getSelectedItem();
+        pronadjeneUlice = Controller.getInstance().searchUlice("NAZIV='" + izabranaUlica.toString() + "'");
+        int ulicaID = pronadjeneUlice.get(0).getId_ulice();
+        
+        Object izabranaUprava = cmbUprava.getSelectedItem();
+        pronadjeneUprave = Controller.getInstance().searchUprave("NAZIV='" + izabranaUprava.toString() + "'");
+        int id_uprave = pronadjeneUprave.get(0).getId_ulice();
+        
+        
+
+        MolbaZaUrbanizam m = new MolbaZaUrbanizam(id_molbe, datum, delovodni_broj, br_iz_LKRM, id_objekta, id_kontaktOsobe, id_koordinatora, id_uprave, 0,0);
+
+        return m;
+
+    }
   
 
     private void btnSacuvajMolbuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSacuvajMolbuActionPerformed
-        
+        try {
+            MolbaZaUrbanizam m = preuzmiPodatkeZaMolbu();
+
+            Controller.getInstance().insertMolba(m);
+
+            popuniTabeluMolbama(m.getId_objekta());
+        } catch (Exception ex) {
+            Logger.getLogger(ObjekatForm.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(null, "Došlo je do greške: " + ex.getMessage(), "Greška", JOptionPane.ERROR_MESSAGE);
+        } 
     }//GEN-LAST:event_btnSacuvajMolbuActionPerformed
 
     private void btnIzmeniMolbuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIzmeniMolbuActionPerformed
-        
+        try {
+            MolbaZaUrbanizam m = preuzmiPodatkeZaMolbu();
+
+            Controller.getInstance().updateMolba(m);
+
+            popuniTabeluMolbama(m.getId_objekta());
+        } catch (Exception ex) {
+            Logger.getLogger(ObjekatForm.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(null, "Došlo je do greške: " + ex.getMessage(), "Greška", JOptionPane.ERROR_MESSAGE);
+        } 
     }//GEN-LAST:event_btnIzmeniMolbuActionPerformed
 
     private void btnObrisiMolbuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnObrisiMolbuActionPerformed
-        
+        try {
+            MolbaZaUrbanizam m = jeIzabranaMolba();
+
+            Controller.getInstance().deleteMolba(m);
+
+            popuniTabeluMolbama(m.getId_objekta());
+        } catch (Exception ex) {
+            Logger.getLogger(ObjekatForm.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(null, "Došlo je do greške: " + ex.getMessage(), "Greška", JOptionPane.ERROR_MESSAGE);
+        }  
     }//GEN-LAST:event_btnObrisiMolbuActionPerformed
 
     private void btnSacuvajObjekatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSacuvajObjekatActionPerformed
@@ -1006,6 +1168,7 @@ private void popuniFormuIzabranimObjektom(Objekat o) throws Exception {
     private javax.swing.JComboBox<String> cmbPostanskiBrObjekat;
     private javax.swing.JComboBox<String> cmbUlica;
     private javax.swing.JComboBox<String> cmbUlicaObjekat;
+    private javax.swing.JComboBox<String> cmbUprava;
     private javax.swing.JComboBox<String> cmbVrstaObjekta;
     private javax.swing.JComboBox<String> cmbVrstaPrikljucka;
     private javax.swing.JLabel jLabel1;
@@ -1023,6 +1186,7 @@ private void popuniFormuIzabranimObjektom(Objekat o) throws Exception {
     private javax.swing.JLabel jLabel21;
     private javax.swing.JLabel jLabel22;
     private javax.swing.JLabel jLabel23;
+    private javax.swing.JLabel jLabel24;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;

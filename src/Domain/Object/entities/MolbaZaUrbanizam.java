@@ -139,16 +139,20 @@ public class MolbaZaUrbanizam extends DomainObject{
 
     @Override
     public String getInsertColumnNames() {
-        return "ID_MOLBE, DATUM, DELOVODNI_BR, BR_IZ_LKRM, ID_OBJEKTA, ID_KONTAKT_OSOBE, ID_KOORDINATORA_TEHNIKE, ID_UPRAVE, POSTANSKI_BR, ID_ULICE";
+        return "ID_MOLBE, DATUM, DELOVODNI_BR, BR_IZ_LKRM, ID_OBJEKTA, ID_KONTAKT_OSOBE, ID_KOORDINATORA_TEHNIKE, ID_UPRAVE,POSTANSKI_BR, ID_ULICE";
     }
 
-   @Override
-    public String getColumnValues() {
+ @Override
+public String getColumnValues() {
     SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
     String datumIzdavanja = (datum != null) ? 
         String.format("TO_DATE('%s', 'DD-MM-YYYY')", sdf.format(datum)) : "NULL";
 
-    return String.format("%d, %s, %d, br_iz_LKRM(%d), %d, %d, %d, %d",
+    String postanskiBrValue = (postanski_br == 0) ? "NULL" : String.valueOf(postanski_br);
+    String idUliceValue = (id_ulice == 0) ? "NULL" : String.valueOf(id_ulice);
+
+
+    return String.format("%d, %s, '%s', br_iz_LKRM(%d), %d, %d, %d, %d, %s, %s",
             id_molbe,
             datumIzdavanja,
             delovodni_br,
@@ -156,15 +160,27 @@ public class MolbaZaUrbanizam extends DomainObject{
             id_objekta,
             id_kontakt_osobe,
             id_koordinatora_tehnike,
-            id_uprave);
+            id_uprave,
+            postanskiBrValue,
+            idUliceValue);
 }
+
 
 
     @Override
     public String getUpdateClause() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
+         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yy");
 
+        String datumd = datum != null ? "TO_DATE('" + sdf.format(datum) + "', 'DD-MM-YY')" : "NULL";
+       return String.format("ID_MOLBE = %d, DATUM = %s, DELOVODNI_BR = '%s' ,BR_IZ_LKRM = br_iz_LKRM(%d),ID_OBJEKTA = %d, ID_KONTAKT_OSOBE= %d, ID_KOORDINATORA_TEHNIKE = %d, ID_UPRAVE = %d",
+                id_molbe,
+                datumd,
+                delovodni_br,
+                br_iz_LKRM,
+                id_objekta,
+                id_kontakt_osobe,
+                id_koordinatora_tehnike,
+                id_uprave);}
     @Override
     public String getWhereIdClause() {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
@@ -176,7 +192,7 @@ public class MolbaZaUrbanizam extends DomainObject{
 
     @Override
     public String getDeleteWhereClause() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    return String.format("ID_MOLBE = %d", this.getId_molbe());    
     }
 
     @Override

@@ -11,11 +11,8 @@ import Domain.Object.entities.ZaposleniPogled;
 import controller.Controller;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
@@ -31,12 +28,12 @@ import javax.swing.table.DefaultTableModel;
  */
 public class ZaposleniForm extends javax.swing.JFrame {
 
-    List<Filijala> filijale = new LinkedList<Filijala>();
-    List<Filijala> pronadjeneFilijale = new LinkedList<Filijala>();
-    List<Ulica> ulice = new LinkedList<Ulica>();
-    List<Ulica> pronadjeneUlice = new LinkedList<Ulica>();
-    List<ZaposleniOsnovno> zaposleniOsnovno = new LinkedList<ZaposleniOsnovno>();
-    List<ZaposleniPogled> pronadjenIzabraniZaposleni = new LinkedList<ZaposleniPogled>();
+    List<Filijala> filijale = new ArrayList<>();
+    List<Filijala> pronadjeneFilijale = new ArrayList<>();
+    List<Ulica> ulice = new ArrayList<>();
+    List<Ulica> pronadjeneUlice = new ArrayList<>();
+    List<ZaposleniOsnovno> zaposleniOsnovno = new ArrayList<>();
+    List<ZaposleniPogled> pronadjenIzabraniZaposleni = new ArrayList<>();
     
     public ZaposleniForm() throws Exception {
         initComponents();
@@ -269,10 +266,12 @@ public class ZaposleniForm extends javax.swing.JFrame {
                 false, false, false
             };
 
+            @Override
             public Class getColumnClass(int columnIndex) {
                 return types[columnIndex];
             }
 
+            @Override
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit[columnIndex];
             }
@@ -281,40 +280,30 @@ public class ZaposleniForm extends javax.swing.JFrame {
     }
     
    private void ucitajPodatkeUFormu() throws Exception {
-    // Filijale
     filijale = Controller.getInstance().loadSveFilijale();
     cmbFilijala.removeAllItems();
     for (Filijala f : filijale) {
         cmbFilijala.addItem(f.getNaziv());
     }
 
-    // Poštanski brojevi
     ucitajPostanskeBrojeve();
 
-    // Ispravan listener za poštanski broj
-    cmbPostanskiBr.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent evt) {
-            try {
-                ucitajUliceZaPostanskiBroj();
-            } catch (Exception ex) {
-                Logger.getLogger(ZaposleniForm.class.getName()).log(Level.SEVERE, null, ex);
-            }
+    cmbPostanskiBr.addActionListener((ActionEvent evt) -> {
+        try {
+            ucitajUliceZaPostanskiBroj();
+        } catch (Exception ex) {
+            Logger.getLogger(ZaposleniForm.class.getName()).log(Level.SEVERE, null, ex);
         }
     });
 
-    // Onemogućavamo comboBox za ulice dok se ne izabere poštanski broj
     cmbUlica.setEnabled(false);
 
-    // Zaposleni
     ucitajZaposlene();
 }
 
-// Metoda za učitavanje svih poštanskih brojeva
 private void ucitajPostanskeBrojeve() throws Exception {
     ulice = Controller.getInstance().loadSveUlice();
     cmbPostanskiBr.removeAllItems();
-    
-    // Dodajemo samo jedinstvene poštanske brojeve
     Set<String> jedinstveniPostanskiBr = new HashSet<>();
     for (Ulica u : ulice) {
         jedinstveniPostanskiBr.add(String.valueOf(u.getPostanski_br()));
@@ -324,20 +313,18 @@ private void ucitajPostanskeBrojeve() throws Exception {
     }
 }
 
-// Metoda koja se poziva kada korisnik izabere poštanski broj
+
 private void ucitajUliceZaPostanskiBroj() throws Exception {
     String izabraniPostanskiBr = (String) cmbPostanskiBr.getSelectedItem();
 
     if (izabraniPostanskiBr != null) {
-        // Učitavamo samo ulice za odabrani poštanski broj
         List<Ulica> filtriraneUlice = controller.Controller.getInstance().searchUlice("POSTANSKI_BR='" + String.valueOf(izabraniPostanskiBr) + "'");
 
-        cmbUlica.removeAllItems();  // Čistimo prethodne podatke
+        cmbUlica.removeAllItems();  
         for (Ulica u : filtriraneUlice) {
             cmbUlica.addItem(u.getNaziv());  
         }
 
-        // Ako postoje ulice, omogućavamo comboBox
         cmbUlica.setEnabled(!filtriraneUlice.isEmpty());
     }
 }
@@ -369,24 +356,21 @@ private void ucitajUliceZaPostanskiBroj() throws Exception {
     }
     
       private void setUpTableListener() {
-        tblZaposleni.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-            public void valueChanged(ListSelectionEvent event) {
-                if (!event.getValueIsAdjusting()) {
-                    try {
-                        ZaposleniPogled izabraniZaposleni = jeIzabranZaposleni();
-                        pronadjenIzabraniZaposleni = Controller.getInstance().searchZaposleni("ID_ZAPOSLENOG='" + String.valueOf(izabraniZaposleni.getId_zaposlenog()) + "'");
-
-                        if (pronadjenIzabraniZaposleni != null && !pronadjenIzabraniZaposleni.isEmpty()) {
-                            izabraniZaposleni = pronadjenIzabraniZaposleni.get(0);
-                        }
-                        popuniFormuIzabranimZaposlenim(izabraniZaposleni);
-                    } catch (Exception ex) {
-                        Logger.getLogger(ZaposleniForm.class.getName()).log(Level.SEVERE, null, ex);
+        tblZaposleni.getSelectionModel().addListSelectionListener((ListSelectionEvent event) -> {
+            if (!event.getValueIsAdjusting()) {
+                try {
+                    ZaposleniPogled izabraniZaposleni = jeIzabranZaposleni();
+                    pronadjenIzabraniZaposleni = Controller.getInstance().searchZaposleni("ID_ZAPOSLENOG='" + String.valueOf(izabraniZaposleni.getId_zaposlenog()) + "'");
+                    
+                    if (pronadjenIzabraniZaposleni != null && !pronadjenIzabraniZaposleni.isEmpty()) {
+                        izabraniZaposleni = pronadjenIzabraniZaposleni.get(0);
                     }
+                    popuniFormuIzabranimZaposlenim(izabraniZaposleni);
+                } catch (Exception ex) {
+                    Logger.getLogger(ZaposleniForm.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-        }
-        );
+        });
     }
       
        private void popuniFormuIzabranimZaposlenim(ZaposleniPogled zp) throws Exception {

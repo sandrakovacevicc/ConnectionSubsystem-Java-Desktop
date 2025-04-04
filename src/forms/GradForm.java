@@ -8,9 +8,11 @@ import Domain.Object.entities.Grad;
 import Domain.Object.entities.KatastarskaOpstina;
 import Domain.Object.entities.Ulica;
 import controller.Controller;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
+import java.util.StringJoiner;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.event.ListSelectionEvent;
@@ -27,13 +29,14 @@ public class GradForm extends javax.swing.JFrame {
      * Creates new form GradForm
      */
     
-    List<Grad> gradovi = new LinkedList<Grad>();
-    List<Grad> pronadjenGrad = new LinkedList<>();
-    List<Ulica> ulice = new LinkedList<>();
-    List<Ulica> pronadjeneUlice = new LinkedList<>();
-    private HashMap<Integer, String[]> originalneVrednostiUlica = new HashMap<>();
-    List<KatastarskaOpstina> katastarskeOpstine = new LinkedList<>();
-    List<KatastarskaOpstina> pronadjeneKatastarskeOpstine= new LinkedList<>();
+    List<Grad> gradovi = new ArrayList<>();
+    List<Grad> pronadjenGrad = new ArrayList<>();
+    List<Ulica> ulice = new ArrayList<>();
+    List<Ulica> pronadjeneUlice = new ArrayList<>();
+    private final HashMap<Integer, String[]> originalneVrednostiUlica = new HashMap<>();
+    List<KatastarskaOpstina> katastarskeOpstine = new ArrayList<>();
+    List<KatastarskaOpstina> pronadjeneKatastarskeOpstine= new ArrayList<>();
+
     
     public GradForm() throws Exception {
         initComponents();
@@ -48,15 +51,13 @@ public class GradForm extends javax.swing.JFrame {
 
     private void ucitajPodatkeUFormu() throws Exception {
         ucitajGradove();
-        cmbGradovi.addActionListener(new java.awt.event.ActionListener() {
-    public void actionPerformed(java.awt.event.ActionEvent evt) {
-        try {
-            ucitajGradoveCmb(evt);
-        } catch (Exception ex) {
-            java.util.logging.Logger.getLogger(GradForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-    }
-});
+        cmbGradovi.addActionListener((java.awt.event.ActionEvent evt) -> {
+            try {
+                ucitajGradoveCmb(evt);
+            } catch (Exception ex) {
+                java.util.logging.Logger.getLogger(GradForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            }
+        });
         
     }
     private void ucitajGradove() throws Exception {
@@ -175,23 +176,21 @@ public class GradForm extends javax.swing.JFrame {
     }
     
     private void setUpTableListenerGrad() {
-    tblGrad.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-        public void valueChanged(ListSelectionEvent event) {
-            if (!event.getValueIsAdjusting()) {
-                try {
-                    Grad izabraniGrad = jeIzabranGrad();
-                    pronadjenGrad = controller.Controller.getInstance().searchGradovi("POSTANSKI_BR='" + izabraniGrad.getPostanski_br()+ "'");
-
-                    if (pronadjenGrad != null && !pronadjenGrad.isEmpty()) {
-                        izabraniGrad = pronadjenGrad.get(0);
-                    }
-
-                    popuniTabeluUlicama(izabraniGrad.getPostanski_br());
-                    originalneVrednostiUlica.clear();
-                    sacuvajOriginalneVrednosti(tblUlica);
-                } catch (Exception ex) {
-                    java.util.logging.Logger.getLogger(GradForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+    tblGrad.getSelectionModel().addListSelectionListener((ListSelectionEvent event) -> {
+        if (!event.getValueIsAdjusting()) {
+            try {
+                Grad izabraniGrad = jeIzabranGrad();
+                pronadjenGrad = controller.Controller.getInstance().searchGradovi("POSTANSKI_BR='" + izabraniGrad.getPostanski_br()+ "'");
+                
+                if (pronadjenGrad != null && !pronadjenGrad.isEmpty()) {
+                    izabraniGrad = pronadjenGrad.get(0);
                 }
+                
+                popuniTabeluUlicama(izabraniGrad.getPostanski_br());
+                originalneVrednostiUlica.clear();
+                sacuvajOriginalneVrednosti(tblUlica);
+            } catch (Exception ex) {
+                java.util.logging.Logger.getLogger(GradForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
             }
         }
     });
@@ -199,25 +198,22 @@ public class GradForm extends javax.swing.JFrame {
 }
     
      private void setUpTableListenerUlica() {
-        tblUlica.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-            public void valueChanged(ListSelectionEvent event) {
-                if (!event.getValueIsAdjusting()) {
-                    try {
-                        Ulica izabranaUlica = jeIzabranaUlica();
-                        pronadjeneUlice = Controller.getInstance().searchUlice("POSTANSKI_BR='" + String.valueOf(izabranaUlica.getPostanski_br()) + "' AND ID_ULICE='" + String.valueOf(izabranaUlica.getId_ulice()) + "'");
-
-                        if (pronadjeneUlice != null && !pronadjeneUlice.isEmpty()) {
-                            izabranaUlica = pronadjeneUlice.get(0);
-                        }
-                        popuniFormuUlicom(izabranaUlica);
-
-                    } catch (Exception ex) {
-                        java.util.logging.Logger.getLogger(GradForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        tblUlica.getSelectionModel().addListSelectionListener((ListSelectionEvent event) -> {
+            if (!event.getValueIsAdjusting()) {
+                try {
+                    Ulica izabranaUlica = jeIzabranaUlica();
+                    pronadjeneUlice = Controller.getInstance().searchUlice("POSTANSKI_BR='" + String.valueOf(izabranaUlica.getPostanski_br()) + "' AND ID_ULICE='" + String.valueOf(izabranaUlica.getId_ulice()) + "'");
+                    
+                    if (pronadjeneUlice != null && !pronadjeneUlice.isEmpty()) {
+                        izabranaUlica = pronadjeneUlice.get(0);
                     }
+                    popuniFormuUlicom(izabranaUlica);
+                    
+                } catch (Exception ex) {
+                    java.util.logging.Logger.getLogger(GradForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
                 }
             }
-        }
-        );
+        });
     }
     
      private Grad jeIzabranGrad() {
@@ -307,56 +303,34 @@ public Grad findGradByPostanskiBr(int postanskiBr) {
 
     private String generisiSetKlauzuUlica(JTable table, int selectedRow) {
         DefaultTableModel model = (DefaultTableModel) table.getModel();
-        StringBuilder setClause = new StringBuilder(" ");
+    StringJoiner setClause = new StringJoiner(", ");
 
-        Integer postanskibr = (Integer) model.getValueAt(selectedRow, 0);
-        Integer idUlice = (Integer) model.getValueAt(selectedRow, 1);
-        String naziv = (String) model.getValueAt(selectedRow, 2);
-        Object value = model.getValueAt(selectedRow, 3);
+    Integer postanskiBr = (Integer) model.getValueAt(selectedRow, 0);
+    Integer idUlice = (Integer) model.getValueAt(selectedRow, 1);
+    String naziv = (String) model.getValueAt(selectedRow, 2);
+    Integer idOpstine = Integer.valueOf(model.getValueAt(selectedRow, 3).toString());
+    String nazivGrada = (String) model.getValueAt(selectedRow, 4);
 
-    Integer idOpstine = null;
-    if (value instanceof Integer) {
-    idOpstine = (Integer) value;
-    } else if (value instanceof String) {
-    try {
-        idOpstine = Integer.parseInt((String) value);
-    } catch (NumberFormatException e) {
-        System.out.println("Greška pri parsiranju idOpstine: " + value);
+    String[] original = originalneVrednostiUlica.get(selectedRow);
+    Integer originalPostanskiBr = Integer.valueOf(original[0]);
+    String originalNaziv = original[2];
+    Integer originalIdOpstine = Integer.valueOf(original[3]);
+    String originalNazivGrada = original[4];
+
+    if (!Objects.equals(postanskiBr, originalPostanskiBr)) {
+        setClause.add("POSTANSKI_BR = '" + postanskiBr + "'");
     }
+    if (!Objects.equals(naziv, originalNaziv)) {
+        setClause.add("NAZIV = '" + naziv + "'");
     }
-        String nazivGrada = (String) model.getValueAt(selectedRow, 4);
+    if (!Objects.equals(idOpstine, originalIdOpstine)) {
+        setClause.add("ID_OPSTINE = " + idOpstine);
+    }
+    if (!Objects.equals(nazivGrada, originalNazivGrada)) {
+        setClause.add("NAZIV_GRADA = '" + nazivGrada + "'");
+    }
 
-        String[] original = originalneVrednostiUlica.get(selectedRow);
-        int originalPostanskiBr = Integer.parseInt(original[0]);
-        String originalNaziv = original[2];
-        int idOpstineOriginal = Integer.parseInt(original[3]); 
-        String originalNazivGrada = original[4];
-
-        boolean needComma = false;
-
-if (postanskibr != originalPostanskiBr) { 
-    setClause.append("POSTANSKI_BR = '").append(postanskibr);
-    needComma = true;
-}
-
-        if (!naziv.equals(originalNaziv)) {
-            setClause.append("NAZIV = '").append(naziv).append("'");
-            needComma = true;
-        }
-        if (!idOpstine.equals(idOpstineOriginal)) {
-        setClause.append("ID_OPSTINE = ").append(idOpstine);  
-        needComma = true;
-            }
-
-
-        if (!nazivGrada.equals(originalNazivGrada)) {
-            if (needComma) {
-                setClause.append(", ");
-            }
-            setClause.append("NAZIV_GRADA = '").append(nazivGrada).append("'");
-        }
-
-        return setClause.toString();
+    return setClause.toString();
     }
 
 

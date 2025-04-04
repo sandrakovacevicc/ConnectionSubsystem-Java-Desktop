@@ -6,13 +6,9 @@ package forms;
 
 import Domain.Object.entities.Objekat;
 import Domain.Object.entities.Snaga;
-import Domain.Object.entities.Ulica;
 import controller.Controller;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -28,14 +24,15 @@ import javax.swing.table.DefaultTableModel;
  */
 public class SnagaForm extends javax.swing.JFrame {
 
-    List<Objekat> objekti = new LinkedList<Objekat>();
-    List<Objekat> pronadjeniObjekti = new LinkedList<Objekat>();
-    List<Snaga> snaga = new LinkedList<Snaga>();
-    List<Snaga> pronadjenaSnaga = new LinkedList<Snaga>();
-        private HashMap<Integer, String[]> originalneVrednosti = new HashMap<>();
+    List<Objekat> objekti = new ArrayList<>();
+    List<Objekat> pronadjeniObjekti = new ArrayList<>();
+    List<Snaga> snaga = new ArrayList<>();
+    List<Snaga> pronadjenaSnaga = new ArrayList<>();
+        private final HashMap<Integer, String[]> originalneVrednosti = new HashMap<>();
 
     /**
      * Creates new form SnagaForm
+     * @throws java.lang.Exception
      */
     public SnagaForm() throws Exception {
         initComponents();
@@ -297,10 +294,12 @@ public class SnagaForm extends javax.swing.JFrame {
                 false, true, true, true
             };
 
+            @Override
             public Class getColumnClass(int columnIndex) {
                 return types[columnIndex];
             }
 
+            @Override
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit[columnIndex];
             }
@@ -324,10 +323,12 @@ public class SnagaForm extends javax.swing.JFrame {
                 false, true, true, true
             };
 
+            @Override
             public Class getColumnClass(int columnIndex) {
                 return types[columnIndex];
             }
 
+            @Override
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit[columnIndex];
             }
@@ -436,47 +437,41 @@ public class SnagaForm extends javax.swing.JFrame {
 
       
       private void setUpTableListenerSnaga() {
-        tblSnaga.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-            public void valueChanged(ListSelectionEvent event) {
-                if (!event.getValueIsAdjusting()) {
-                    try {
-                        Snaga izabranaSnaga = jeIzabranaSnaga();
-                        pronadjenaSnaga = Controller.getInstance().searchSnaga("ID_SNAGE='" + String.valueOf(izabranaSnaga.getId_snage()) + "'");
-
-                        if (pronadjenaSnaga != null && !pronadjenaSnaga.isEmpty()) {
-                            izabranaSnaga = pronadjenaSnaga.get(0);
-                        }
-                        popuniFormuSnagom(izabranaSnaga);
-                        originalneVrednosti.clear();
-                        sacuvajOriginalneVrednosti(tblObjekat);
-                    } catch (Exception ex) {
-                        Logger.getLogger(SnagaForm.class.getName()).log(Level.SEVERE, null, ex);
+        tblSnaga.getSelectionModel().addListSelectionListener((ListSelectionEvent event) -> {
+            if (!event.getValueIsAdjusting()) {
+                try {
+                    Snaga izabranaSnaga = jeIzabranaSnaga();
+                    pronadjenaSnaga = Controller.getInstance().searchSnaga("ID_SNAGE='" + String.valueOf(izabranaSnaga.getId_snage()) + "'");
+                    
+                    if (pronadjenaSnaga != null && !pronadjenaSnaga.isEmpty()) {
+                        izabranaSnaga = pronadjenaSnaga.get(0);
                     }
+                    popuniFormuSnagom(izabranaSnaga);
+                    originalneVrednosti.clear();
+                    sacuvajOriginalneVrednosti(tblObjekat);
+                } catch (Exception ex) {
+                    Logger.getLogger(SnagaForm.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-        }
-        );
+        });
     }
       
       private void setUpTableListenerObjekat() {
-        tblObjekat.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-            public void valueChanged(ListSelectionEvent event) {
-                if (!event.getValueIsAdjusting()) {
-                    try {
-                        Objekat izabraniObjekat = jeIzabranObjekat();
-                        pronadjeniObjekti = Controller.getInstance().searchObjekti("ID_OBJEKTA='" + String.valueOf(izabraniObjekat.getId_objekta()) + "'");
-
-                        if (pronadjeniObjekti != null && !pronadjeniObjekti.isEmpty()) {
-                            izabraniObjekat = pronadjeniObjekti.get(0);
-                        }
-                        popuniTabeluSnagama(izabraniObjekat.getId_objekta());
-                    } catch (Exception ex) {
-                        Logger.getLogger(SnagaForm.class.getName()).log(Level.SEVERE, null, ex);
+        tblObjekat.getSelectionModel().addListSelectionListener((ListSelectionEvent event) -> {
+            if (!event.getValueIsAdjusting()) {
+                try {
+                    Objekat izabraniObjekat = jeIzabranObjekat();
+                    pronadjeniObjekti = Controller.getInstance().searchObjekti("ID_OBJEKTA='" + String.valueOf(izabraniObjekat.getId_objekta()) + "'");
+                    
+                    if (pronadjeniObjekti != null && !pronadjeniObjekti.isEmpty()) {
+                        izabraniObjekat = pronadjeniObjekti.get(0);
                     }
+                    popuniTabeluSnagama(izabraniObjekat.getId_objekta());
+                } catch (Exception ex) {
+                    Logger.getLogger(SnagaForm.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-        }
-        );
+        });
     }
       
       private Snaga preuzmiPodatkeZaSNagu() throws Exception {

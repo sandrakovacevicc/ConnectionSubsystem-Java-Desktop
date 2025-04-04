@@ -10,9 +10,9 @@ import Domain.Object.entities.ZaposleniPogled;
 import controller.Controller;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -28,14 +28,12 @@ import javax.swing.table.DefaultTableModel;
  */
 public class ZahtevForm extends javax.swing.JFrame {
 
-    List<Zahtev> zahtevi = new LinkedList<Zahtev>();
-    List<Zahtev> pronadjeniZahtev = new LinkedList<Zahtev>();
-    List<ZaposleniPogled> zaposleni = new LinkedList<ZaposleniPogled>();
-    List<ZaposleniPogled> pronadjeniZaposleni = new LinkedList<ZaposleniPogled>();
-    List<Objekat> objekti = new LinkedList<Objekat>();
-    List<Objekat> pronadjeniObjekti = new LinkedList<Objekat>();
+    List<Zahtev> zahtevi = new ArrayList<>();
+    List<Zahtev> pronadjeniZahtev = new ArrayList<>();
+    List<ZaposleniPogled> zaposleni = new ArrayList<>();
+    List<Objekat> objekti = new ArrayList<>();
     private Date originalDatum;
-    private HashMap<Integer, String[]> originalneVrednostiZahteva = new HashMap<>();
+    private final HashMap<Integer, String[]> originalneVrednostiZahteva = new HashMap<>();
     public ZahtevForm() throws Exception {
         initComponents();
         setTitle("Zahtev");
@@ -515,24 +513,21 @@ private void popuniFormuIzabranimZahtevom(Zahtev z) throws Exception {
 
     
      private void setUpTableListener() {
-        tblZahtev.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-            public void valueChanged(ListSelectionEvent event) {
-                if (!event.getValueIsAdjusting()) {
-                    try {
-                        Zahtev izabraniZahtev= jeIzabraniZahtev();
-                        pronadjeniZahtev = Controller.getInstance().searchZahteve("BR_ZAHTEVA='" + String.valueOf(izabraniZahtev.getBr_zahteva()) + "'");
-
-                        if (pronadjeniZahtev != null && !pronadjeniZahtev.isEmpty()) {
-                            izabraniZahtev = pronadjeniZahtev.get(0);
-                        }
-                        popuniFormuIzabranimZahtevom(izabraniZahtev);
-                    } catch (Exception ex) {
-                        Logger.getLogger(ZahtevForm.class.getName()).log(Level.SEVERE, null, ex);
+        tblZahtev.getSelectionModel().addListSelectionListener((ListSelectionEvent event) -> {
+            if (!event.getValueIsAdjusting()) {
+                try {
+                    Zahtev izabraniZahtev= jeIzabraniZahtev();
+                    pronadjeniZahtev = Controller.getInstance().searchZahteve("BR_ZAHTEVA='" + String.valueOf(izabraniZahtev.getBr_zahteva()) + "'");
+                    
+                    if (pronadjeniZahtev != null && !pronadjeniZahtev.isEmpty()) {
+                        izabraniZahtev = pronadjeniZahtev.get(0);
                     }
+                    popuniFormuIzabranimZahtevom(izabraniZahtev);
+                } catch (Exception ex) {
+                    Logger.getLogger(ZahtevForm.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-        }
-        );
+        });
     }
     private void rbDP3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbDP3ActionPerformed
         // TODO add your handling code here:
@@ -638,13 +633,11 @@ private void popuniFormuIzabranimZahtevom(Zahtev z) throws Exception {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                try {
-                    new ZahtevForm().setVisible(true);
-                } catch (Exception ex) {
-                    Logger.getLogger(ZahtevForm.class.getName()).log(Level.SEVERE, null, ex);
-                }
+        java.awt.EventQueue.invokeLater(() -> {
+            try {
+                new ZahtevForm().setVisible(true);
+            } catch (Exception ex) {
+                Logger.getLogger(ZahtevForm.class.getName()).log(Level.SEVERE, null, ex);
             }
         });
     }

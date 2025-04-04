@@ -18,10 +18,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
@@ -37,25 +37,24 @@ import javax.swing.table.DefaultTableModel;
  */
 public class ObjekatForm extends javax.swing.JFrame {
 
-    List<Objekat> objekti = new LinkedList<Objekat>();
-    List<Objekat> pronadjeniObjekti = new LinkedList<Objekat>();
-    List<NacinGrejanja> grejanje = new LinkedList<NacinGrejanja>();
-    List<NacinGrejanja> pronadjenaGrejanja = new LinkedList<NacinGrejanja>();
-    List<VrstaPrikljucka> vrsteprikljucaka = new LinkedList<VrstaPrikljucka>();
-    List<VrstaPrikljucka> pronadjeneVrstePrikljucka = new LinkedList<VrstaPrikljucka>();
-    List<TipInstalacije> instalacije = new LinkedList<TipInstalacije>();
-    List<TipInstalacije> pronadjeneInstalacije = new LinkedList<TipInstalacije>();
-    List<NamenaObjekta> namenaObjekta = new LinkedList<NamenaObjekta>();
-    List<NamenaObjekta> pronadjeneNameneObjekta = new LinkedList<NamenaObjekta>();
-    List<ZaposleniPogled> zaposleni = new LinkedList<ZaposleniPogled>();
-    List<ZaposleniPogled> pronadjeniZaposleni = new LinkedList<ZaposleniPogled>();
-    List<Ulica> ulice = new LinkedList<Ulica>();
-    List<Ulica> pronadjeneUlice = new LinkedList<Ulica>();
-    List<MolbaZaUrbanizam> molbe = new LinkedList<MolbaZaUrbanizam>();
-    List<MolbaZaUrbanizam> pronadjeneMolbe = new LinkedList<MolbaZaUrbanizam>();
-    List<GradskaUprava> uprave = new LinkedList<GradskaUprava>();
-    List<GradskaUprava> pronadjeneUprave = new LinkedList<GradskaUprava>();
-        private HashMap<Integer, String[]> originalneVrednostiObjekta = new HashMap<>();
+    List<Objekat> objekti = new ArrayList<>();
+    List<Objekat> pronadjeniObjekti = new ArrayList<>();
+    List<NacinGrejanja> grejanje = new ArrayList<>();
+    List<NacinGrejanja> pronadjenaGrejanja = new ArrayList<>();
+    List<VrstaPrikljucka> vrsteprikljucaka = new ArrayList<>();
+    List<VrstaPrikljucka> pronadjeneVrstePrikljucka = new ArrayList<>();
+    List<TipInstalacije> instalacije = new ArrayList<>();
+    List<TipInstalacije> pronadjeneInstalacije = new ArrayList<>();
+    List<NamenaObjekta> namenaObjekta = new ArrayList<>();
+    List<NamenaObjekta> pronadjeneNameneObjekta = new ArrayList<>();
+    List<ZaposleniPogled> zaposleni = new ArrayList<>();
+    List<Ulica> ulice = new ArrayList<>();
+    List<Ulica> pronadjeneUlice = new ArrayList<>();
+    List<MolbaZaUrbanizam> molbe = new ArrayList<>();
+    List<MolbaZaUrbanizam> pronadjeneMolbe = new ArrayList<>();
+    List<GradskaUprava> uprave = new ArrayList<>();
+    List<GradskaUprava> pronadjeneUprave = new ArrayList<>();
+        private final HashMap<Integer, String[]> originalneVrednostiObjekta = new HashMap<>();
 
     
     public ObjekatForm() throws Exception {
@@ -645,28 +644,24 @@ public class ObjekatForm extends javax.swing.JFrame {
           cmbUlica.setEnabled(false);
           cmbPostanskiBr.setEnabled(false);
 
-    cmbPostanskiBr.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent evt) {
-            try {
-                ucitajUliceZaPostanskiBroj();
-            } catch (Exception ex) {
-                Logger.getLogger(ZaposleniForm.class.getName()).log(Level.SEVERE, null, ex);
-            }
+    cmbPostanskiBr.addActionListener((ActionEvent evt) -> {
+        try {
+            ucitajUliceZaPostanskiBroj();
+        } catch (Exception ex) {
+            Logger.getLogger(ZaposleniForm.class.getName()).log(Level.SEVERE, null, ex);
         }
-    });
+       });
           ucitajPostanskeBrojeveObjekat();
           
           cmbUlicaObjekat.setEnabled(false);
     
-    cmbPostanskiBrObjekat.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent evt) {
-            try {
-                ucitajUliceZaPostanskiBrojObjekat();
-            } catch (Exception ex) {
-                Logger.getLogger(ZaposleniForm.class.getName()).log(Level.SEVERE, null, ex);
-            }
+    cmbPostanskiBrObjekat.addActionListener((ActionEvent evt) -> {
+        try {
+            ucitajUliceZaPostanskiBrojObjekat();
+        } catch (Exception ex) {
+            Logger.getLogger(ZaposleniForm.class.getName()).log(Level.SEVERE, null, ex);
         }
-    });
+       });
           
     }
 
@@ -754,26 +749,22 @@ private void popuniFormuIzabranimObjektom(Objekat o) throws Exception {
 
 
  private void setUpTableListenerObjekat() {
-        tblObjekat.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-            public void valueChanged(ListSelectionEvent event) {
-                if (!event.getValueIsAdjusting()) {
-                    try {
-                        Objekat o = jeIzabranObjekat();
-                        pronadjeniObjekti = Controller.getInstance().searchObjekti("ID_OBJEKTA='" + String.valueOf(o.getId_objekta()) + "'");
-                        if (pronadjeniObjekti != null && !pronadjeniObjekti.isEmpty()) {
-                            o = pronadjeniObjekti.get(0);
-                        }
-                        popuniFormuIzabranimObjektom(o);
-                        popuniTabeluMolbama(o.getId_objekta());
-                        originalneVrednostiObjekta.clear();
-                    } catch (Exception ex) {
-                        Logger.getLogger(ObjekatForm.class.getName()).log(Level.SEVERE, null, ex);
+        tblObjekat.getSelectionModel().addListSelectionListener((ListSelectionEvent event) -> {
+            if (!event.getValueIsAdjusting()) {
+                try {
+                    Objekat o = jeIzabranObjekat();
+                    pronadjeniObjekti = Controller.getInstance().searchObjekti("ID_OBJEKTA='" + String.valueOf(o.getId_objekta()) + "'");
+                    if (pronadjeniObjekti != null && !pronadjeniObjekti.isEmpty()) {
+                        o = pronadjeniObjekti.get(0);
                     }
+                    popuniFormuIzabranimObjektom(o);
+                    popuniTabeluMolbama(o.getId_objekta());
+                    originalneVrednostiObjekta.clear();
+                } catch (Exception ex) {
+                    Logger.getLogger(ObjekatForm.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-
-        }
-        );
+        });
     }
  
   private Objekat jeIzabranObjekat() {
@@ -1140,13 +1131,11 @@ private void popuniFormuIzabranimObjektom(Objekat o) throws Exception {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                try {
-                    new ObjekatForm().setVisible(true);
-                } catch (Exception ex) {
-                    Logger.getLogger(ObjekatForm.class.getName()).log(Level.SEVERE, null, ex);
-                }
+        java.awt.EventQueue.invokeLater(() -> {
+            try {
+                new ObjekatForm().setVisible(true);
+            } catch (Exception ex) {
+                Logger.getLogger(ObjekatForm.class.getName()).log(Level.SEVERE, null, ex);
             }
         });
     }

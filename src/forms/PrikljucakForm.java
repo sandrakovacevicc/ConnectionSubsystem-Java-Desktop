@@ -6,16 +6,15 @@ package forms;
 
 
 import Domain.Object.entities.Direktor;
-import Domain.Object.entities.Grad;
 import Domain.Object.entities.Prikljucak;
 import Domain.Object.entities.Resenje;
-import Domain.Object.entities.Ulica;
 import Domain.Object.entities.UsloviPostavljanja;
 import Domain.Object.entities.UsloviZastite;
 import Domain.Object.entities.Zahtev;
 import controller.Controller;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -35,22 +34,20 @@ import javax.swing.table.DefaultTableModel;
  */
 public class PrikljucakForm extends javax.swing.JFrame {
 
-    List<Prikljucak> prikljucci = new LinkedList<Prikljucak>();
-    List<Prikljucak> pronadjenPrikljucak = new LinkedList<>();
-    List<Resenje> resenja = new LinkedList<>();
-    List<Resenje> pronadjenaResenja = new LinkedList<>();
-    private HashMap<Integer, String[]> originalneVrednostiResenje = new HashMap<>();
-    List<Direktor> direktori = new LinkedList<>();
-    List<Direktor> pronadjeniDirektori= new LinkedList<>();
-    List<Zahtev> zahtevi = new LinkedList<>();
-    List<Zahtev> pronadjeniZahtevi= new LinkedList<>();
-    List<UsloviPostavljanja> usloviPostavljanja = new LinkedList<>();
-    List<UsloviPostavljanja> pronadjeniUslovPostavljanja= new LinkedList<>();
-    List<UsloviZastite> usloviZastite = new LinkedList<>();
-    List<UsloviZastite> pronadjeniUslovZastite= new LinkedList<>();
+    List<Prikljucak> prikljucci = new ArrayList<>();
+    List<Prikljucak> pronadjenPrikljucak = new ArrayList<>();
+    List<Resenje> resenja = new ArrayList<>();
+    List<Resenje> pronadjenaResenja = new ArrayList<>();
+    private final HashMap<Integer, String[]> originalneVrednostiResenje = new HashMap<>();
+    List<Direktor> direktori = new ArrayList<>();
+    List<Zahtev> zahtevi = new ArrayList<>();
+    List<UsloviPostavljanja> usloviPostavljanja = new ArrayList<>();
+    List<UsloviZastite> usloviZastite = new ArrayList<>();
+    List<UsloviZastite> pronadjeniUslovZastite= new ArrayList<>();
 
     /**
      * Creates new form PrikljucakForm
+     * @throws java.lang.Exception
      */
     public PrikljucakForm() throws Exception {
         initComponents();
@@ -279,32 +276,30 @@ public class PrikljucakForm extends javax.swing.JFrame {
 
 
     private void setUpTableListenerPrikljucak() {
-    tblPrikljucak.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-        public void valueChanged(ListSelectionEvent event) {
-            if (!event.getValueIsAdjusting()) {
-                try {
-                    Prikljucak izabraniPrikljucak = jeIzabranPrikljucak();
-
-                    if (izabraniPrikljucak == null) {
-                        System.out.println("Izabrani priključak je null!");
-                        return; 
-                    }
-
-                    pronadjenPrikljucak = controller.Controller.getInstance()
-                        .searchPrikljucci("ID_PRIKLJUCAK='" + izabraniPrikljucak.getId_prikljucak() + "'");
-
-                    if (pronadjenPrikljucak != null && !pronadjenPrikljucak.isEmpty()) {
-                        izabraniPrikljucak = pronadjenPrikljucak.get(0);
-                    }
-
-                    popuniTabeluResenjima(izabraniPrikljucak.getId_prikljucak());
-                    originalneVrednostiResenje.clear();
-                    sacuvajOriginalneVrednosti(tblResenje);
-
-                } catch (Exception ex) {
-                    java.util.logging.Logger.getLogger(GradForm.class.getName())
-                        .log(java.util.logging.Level.SEVERE, null, ex);
+    tblPrikljucak.getSelectionModel().addListSelectionListener((ListSelectionEvent event) -> {
+        if (!event.getValueIsAdjusting()) {
+            try {
+                Prikljucak izabraniPrikljucak = jeIzabranPrikljucak();
+                
+                if (izabraniPrikljucak == null) {
+                    System.out.println("Izabrani priključak je null!");
+                    return;
                 }
+                
+                pronadjenPrikljucak = controller.Controller.getInstance()
+                        .searchPrikljucci("ID_PRIKLJUCAK='" + izabraniPrikljucak.getId_prikljucak() + "'");
+                
+                if (pronadjenPrikljucak != null && !pronadjenPrikljucak.isEmpty()) {
+                    izabraniPrikljucak = pronadjenPrikljucak.get(0);
+                }
+                
+                popuniTabeluResenjima(izabraniPrikljucak.getId_prikljucak());
+                originalneVrednostiResenje.clear();
+                sacuvajOriginalneVrednosti(tblResenje);
+                
+            } catch (Exception ex) {
+                java.util.logging.Logger.getLogger(GradForm.class.getName())
+                        .log(java.util.logging.Level.SEVERE, null, ex);
             }
         }
     });
@@ -416,16 +411,15 @@ public class PrikljucakForm extends javax.swing.JFrame {
         Object selectedItem = cmbZahtev.getSelectedItem();
         Date selectedDate = null;
 
-        if (selectedItem instanceof String) {
-            String rawDate = (String) selectedItem;
+        if (selectedItem instanceof String rawDate) {
             SimpleDateFormat inputFormatt = new SimpleDateFormat("yyyy-MM-dd");
             try {
                 selectedDate = inputFormatt.parse(rawDate);
             } catch (ParseException e) {
                 throw new Exception("Neispravan format datuma. Očekivani format je yyyy-MM-dd.");
             }
-        } else if (selectedItem instanceof Date) {
-            selectedDate = (Date) selectedItem;
+        } else if (selectedItem instanceof Date date) {
+            selectedDate = date;
         } else {
             throw new Exception("Neispravan tip podataka u ComboBox-u za datum.");
         }
@@ -964,13 +958,11 @@ public class PrikljucakForm extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                try {
-                    new PrikljucakForm().setVisible(true);
-                } catch (Exception ex) {
-                    Logger.getLogger(PrikljucakForm.class.getName()).log(Level.SEVERE, null, ex);
-                }
+        java.awt.EventQueue.invokeLater(() -> {
+            try {
+                new PrikljucakForm().setVisible(true);
+            } catch (Exception ex) {
+                Logger.getLogger(PrikljucakForm.class.getName()).log(Level.SEVERE, null, ex);
             }
         });
     }

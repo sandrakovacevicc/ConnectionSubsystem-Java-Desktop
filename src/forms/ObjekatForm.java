@@ -525,9 +525,10 @@ public class ObjekatForm extends javax.swing.JFrame {
                                                 .addComponent(jLabel19)
                                                 .addComponent(cmbKoordinatorTehnike, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                                 .addGap(18, 18, 18)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(jLabel24)
-                                    .addComponent(cmbUprava, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(cmbUprava, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(jLabel24)))
                                 .addGap(0, 19, Short.MAX_VALUE))))))
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
@@ -1017,7 +1018,7 @@ private void popuniFormuIzabranimObjektom(Objekat o) throws Exception {
         
         Object izabranaUprava = cmbUprava.getSelectedItem();
         pronadjeneUprave = Controller.getInstance().searchUprave("NAZIV='" + izabranaUprava.toString() + "'");
-        int id_uprave = pronadjeneUprave.get(0).getId_ulice();
+        int id_uprave = pronadjeneUprave.get(0).getId_uprave();
         
         
 
@@ -1070,6 +1071,7 @@ private void popuniFormuIzabranimObjektom(Objekat o) throws Exception {
     private void btnSacuvajObjekatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSacuvajObjekatActionPerformed
         try {
             Objekat objekat = preuzmiPodatkeZaObjekat();
+            objekat.setUkupna_snaga(0);
 
             Controller.getInstance().insertObjekat(objekat);
 

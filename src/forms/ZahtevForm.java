@@ -548,7 +548,7 @@ private void popuniFormuIzabranimZahtevom(Zahtev z) throws Exception {
                 zahtevi = Controller.getInstance().getParticijeZahtevi("PARTITION (p2023)");
             }
             if (rbDP4.isSelected()) {
-                zahtevi = Controller.getInstance().getParticijeZahtevi("PARTITION (SYS_P426)");
+                zahtevi = Controller.getInstance().getParticijeZahtevi("PARTITION (SYS_P217)");
             }
             ucitajZahteve(true);
         } catch (Exception ex) {
